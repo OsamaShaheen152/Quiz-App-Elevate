@@ -1,39 +1,99 @@
+"use client";
+
+import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
-export default function LoginPage() {
+export default function LoginForm() {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null); // Clear previous errors
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Object.fromEntries(formData) as {
+      email: string;
+      password: string;
+    };
+
+    try {
+      const response = await signIn("credentials", {
+        
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        // callbackUrl:
+        //   new URLSearchParams(location.search).get("callbackUrl") ||
+        //   "/diplomas",
+      });
+
+      if (response?.error) {
+        setError(response.error); // Display specific error
+      } else if (response?.ok) {
+        // Redirect to desired page after successful login
+        // In authentication use location.href to make a full page refresh be ensure the session has been saved and avoid the use of nextjs router
+        location.href = "/diplomas"; // Or use Next.js router
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+      console.error("Login error:", error);
+    }
+  };
+
   return (
-    <div className="w-[450px] flex flex-col  justify-center gap-4 min-h-screen p-4">
-      <h1 className="text-3xl font-bold">Login</h1>
-      <form action="" method="get" className="flex flex-col gap-4 relative">
-        <Label htmlFor="email" className="text-base font-medium">
-          Email
-        </Label>
-        <Input id="email" type="email" className="outline-none" />
-        <Label htmlFor="password" className="text-base font-medium">
-          Password
-        </Label>
-        <Input id="password" type="password" className="outline-none" />
-        <Link
-          href="/forgot-password"
-          className="absolute right-0 bottom-24 text-blue-600"
-        >
-          Forgot Your Password?
-        </Link>
-        <div className="flex flex-col items-center mt-8 gap-4 w-full ">
-          <Button className="bg-blue-600 hover:bg-blue-700 w-full">
-            Login
-          </Button>
-          <span>
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-blue-600">
-              Create Yours
-            </Link>
-          </span>
-        </div>
-      </form>
-    </div>
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold text-center">
+          Sign In
+        </CardTitle>
+        <CardDescription className="text-center">
+          Enter your credentials to access your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium">
+              Email
+            </label>
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="password" className="text-sm font-medium">
+              Password
+            </label>
+            <Input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              className="w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            {error && <p className="text-red-500">{error}</p>}
+            <Button type="submit" className="w-full">
+              Sign In
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,16 +1,15 @@
-import DashboardAside from "./_components/DashboardAside";
+import DashboardAside from "./_components/dashboard-aside";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   return (
-    <div className="flex min-h-screen items-center gap-x-32">
+    <div className="flex min-h-screen  ">
       <DashboardAside />
       {/* Main Content */}
-      <div>{children}</div>
+      <div className="translate-x-[450px] ">{children}</div>
     </div>
   );
 }

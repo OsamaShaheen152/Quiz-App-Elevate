@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Providers from "@/components/providers";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -26,7 +27,10 @@ export default function RootLayout({
   return (
     // ${geistSans.variable} ${geistMono.variable}
     <html lang="en">
-      <body className={`  antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        {/* Providers */}
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
