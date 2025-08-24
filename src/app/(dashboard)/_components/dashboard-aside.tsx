@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 export default function DashboardAside() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -23,25 +24,6 @@ export default function DashboardAside() {
     },
   ];
 
-  // async function getExams() {
-  //   try {
-  //     const response = await fetch("https://exam.elevateegy.com/api/v1/exams", {
-  //       method: "GET",
-  //       headers: {
-  //         token:
-  //           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjZkNjk0Y2MzZGViYTYwZDA0Yjc4OCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU1MzU0MTE3fQ.9okzQ3M0TbmJi-jVYad-GZHULv_WBk9dlfNl3ldvw1k",
-  //       },
-  //     });
-
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // }
-
-  // getExams();
-
   return (
     <aside className="w-80  bg-blue-50 p-4 h-screen fixed">
       <Image
@@ -56,14 +38,18 @@ export default function DashboardAside() {
       <nav>
         <ul>
           {links.map((link) => (
-            <li
-              key={link.href}
-              className={`flex items-center gap-2 mb-4 h-14 pl-4 cursor-pointer ${
-                pathname === link.href ? "bg-blue-100 border-blue-100" : ""
-              }`}
-            >
-              {link.icon}
-              <Link href={link.href}>{link.label}</Link>
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className={`flex items-center gap-2 mb-4 h-14 pl-4 cursor-pointer  outline-blue-300 ${
+                  pathname === link.href
+                    ? "bg-blue-100 border border-blue-300"
+                    : ""
+                }`}
+              >
+                <span>{link.icon}</span>
+                <span>{link.label}</span>
+              </Link>
             </li>
           ))}
         </ul>

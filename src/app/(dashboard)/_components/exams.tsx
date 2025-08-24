@@ -9,8 +9,6 @@ export default function Exams({ subjectId }: { subjectId: string }) {
 
   console.log("subjectId From Exams component ", subjectId);
 
-  // console.log(payload);
-
   const allSubjectExams = payload?.pages?.flatMap((page) => page?.exams) || [];
   console.log(allSubjectExams);
 
@@ -29,7 +27,7 @@ export default function Exams({ subjectId }: { subjectId: string }) {
         {allSubjectExams && (
           <ul>
             {allSubjectExams.map((exam) => (
-              <li key={exam._id} className="bg-blue-50">
+              <li key={exam._id} className="bg-blue-50 py-6">
                 <span className="font-bold">{exam.title}</span>
                 <span className="ml-2 text-gray-500">{exam.duration}</span>
                 <span className="ml-2 text-gray-500">

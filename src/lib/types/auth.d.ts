@@ -11,3 +11,18 @@ export interface LoginResponse {
     isVerified: boolean;
   };
 }
+
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
+type RegisterFormValues = {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  rePassword: string;
+  phone: string;
+};

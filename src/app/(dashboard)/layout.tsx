@@ -1,3 +1,4 @@
+import Breadcrumb from "./_components/breadcrumb";
 import DashboardAside from "./_components/dashboard-aside";
 
 export default function DashboardLayout({
@@ -6,10 +7,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen  ">
+    <div className="flex min-h-screen ">
       <DashboardAside />
       {/* Main Content */}
-      <div className="translate-x-[450px] ">{children}</div>
+      <div className="translate-x-96 w-[990px]">
+        <Breadcrumb />
+        {children}
+      </div>
     </div>
   );
 }
