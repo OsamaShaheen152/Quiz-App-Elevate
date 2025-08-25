@@ -2,7 +2,6 @@ import Exams from "../../_components/exams";
 
 export default function ExamsPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  console.log("Exam ID from Exams Page:", id);
 
   return (
     <div>

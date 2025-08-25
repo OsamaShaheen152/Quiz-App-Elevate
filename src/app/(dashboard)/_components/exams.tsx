@@ -2,8 +2,11 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import useExams from "../_hooks/use-exams";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Exams({ subjectId }: { subjectId: string }) {
+  const router = useRouter();
+
   const { payload, isLoading, error, hasNextPage, fetchNextPage } =
     useExams(subjectId);
 
@@ -27,7 +30,15 @@ export default function Exams({ subjectId }: { subjectId: string }) {
         {allSubjectExams && (
           <ul>
             {allSubjectExams.map((exam) => (
-              <li key={exam._id} className="bg-blue-50 py-6">
+              // fix: li style
+              <li
+                key={exam._id}
+                className="bg-blue-50 py-6"
+                onClick={() => {
+                  console.log(exam._id);
+                  router.push(`/quiz/${exam._id}`);
+                }}
+              >
                 <span className="font-bold">{exam.title}</span>
                 <span className="ml-2 text-gray-500">{exam.duration}</span>
                 <span className="ml-2 text-gray-500">

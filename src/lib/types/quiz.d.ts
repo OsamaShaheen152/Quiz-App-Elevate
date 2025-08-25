@@ -17,7 +17,7 @@ export interface Question {
   _id: string;
   question: string;
   answers: AnswerOption[];
-  type: "single_choice" | "multiple_choice";
+  // type: "single_choice" | "multiple_choice";
   correct: string;
   subject: string | null;
   exam: Exam;

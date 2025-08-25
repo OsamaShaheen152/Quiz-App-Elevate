@@ -36,7 +36,6 @@ export default function Diplomas() {
                 key={diploma._id}
                 className="cursor-pointer relative"
                 onClick={() => {
-                  console.log(diploma._id);
                   return router.push(`/exams/${diploma._id}`);
                 }}
               >

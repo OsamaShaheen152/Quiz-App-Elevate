@@ -22,9 +22,10 @@ export async function fetchQuizQuestions(
 export async function submitQuiz(
   submission: QuizSubmission
 ): Promise<QuizResult> {
-  const response = await fetch(`${API_BASE_URL}/quiz-submit`, {
+  const response = await fetch(`${API_BASE_URL}/api/quiz-submit`, {
     method: "POST",
     headers: {
+      token: process.env.TOKEN!,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(submission),

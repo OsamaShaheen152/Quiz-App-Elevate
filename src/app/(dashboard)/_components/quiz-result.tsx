@@ -1,7 +1,7 @@
 "use client";
-
-import { Question, QuizResult } from "@/lib/types/quiz";
 import React from "react";
+import type { QuizResult, Question } from "@/lib/types/quiz";
+import { Button } from "@/components/ui/button";
 
 interface QuizResultProps {
   result: QuizResult;
@@ -19,7 +19,12 @@ export function QuizResultComponent({
   onExplore,
 }: QuizResultProps) {
   // Calculate correct and incorrect counts
-  const correctCount = result.score;
+  const correctCount =
+    result.score ||
+    questions.reduce((count, question) => {
+      const userAnswer = userAnswers[question._id];
+      return count + (userAnswer === question.correct ? 1 : 0);
+    }, 0);
   const incorrectCount = result.totalQuestions - result.score;
 
   return (
@@ -120,8 +125,8 @@ export function QuizResultComponent({
 
         {/* Right Side - Questions Review */}
         <div className="flex-1">
-          <div className="space-y-4">
-            {questions.slice(0, 3).map((question) => {
+          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+            {questions.map((question) => {
               const userAnswer = userAnswers[question._id];
               const isCorrect = userAnswer === question.correct;
               const correctAnswerText = question.answers.find(
@@ -203,7 +208,7 @@ export function QuizResultComponent({
       {/* Bottom Buttons */}
       <div className="max-w-4xl mx-auto p-4">
         <div className="flex justify-between">
-          <button
+          <Button
             onClick={onRetakeQuiz}
             className="flex items-center space-x-2 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
           >
@@ -215,9 +220,9 @@ export function QuizResultComponent({
               />
             </svg>
             <span>Restart</span>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={onExplore}
             className="flex items-center space-x-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
@@ -229,7 +234,7 @@ export function QuizResultComponent({
               />
             </svg>
             <span>Explore</span>
-          </button>
+          </Button>
         </div>
       </div>
     </div>
