@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:3000";
 
 // Todo: Implement fetchQuizQuestions
 export async function fetchQuizQuestions(
-  examId: string
+  examId: string,
 ): Promise<QuizApiResponse> {
   const res = await fetch(`${API_BASE_URL}/api/quiz-questions/${examId}`);
 
@@ -20,14 +20,10 @@ export async function fetchQuizQuestions(
 
 // Todo: Submit quiz answers
 export async function submitQuiz(
-  submission: QuizSubmission
+  submission: QuizSubmission,
 ): Promise<QuizResult> {
   const response = await fetch(`${API_BASE_URL}/api/quiz-submit`, {
     method: "POST",
-    headers: {
-      token: process.env.TOKEN!,
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(submission),
   });
 

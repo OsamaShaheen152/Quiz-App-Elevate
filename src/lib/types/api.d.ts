@@ -8,3 +8,17 @@ declare type SuccessResponse<T> = {
 } & T;
 
 type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+// Pagination metadata interface
+export interface PaginationMetadata {
+  currentPage: number;
+  numberOfPages: number;
+  totalItems?: number;
+  itemsPerPage?: number;
+}
+
+// Generic paginated response interface
+export interface PaginatedResponse<T> {
+  data: T[];
+  metadata: PaginationMetadata;
+}

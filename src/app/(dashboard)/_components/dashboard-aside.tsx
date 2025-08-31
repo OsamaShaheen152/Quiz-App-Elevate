@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function DashboardAside() {
-  const pathname = usePathname();
+  const pathName = usePathname();
   const { data: session } = useSession();
 
   const links = [
@@ -25,7 +25,7 @@ export default function DashboardAside() {
   ];
 
   return (
-    <aside className="w-80  bg-blue-50 p-4 h-screen fixed">
+    <aside className="fixed h-screen w-80 bg-blue-50 p-4">
       <Image
         src={"assets/images/Final Logo 1.svg"}
         alt="Logo"
@@ -41,10 +41,10 @@ export default function DashboardAside() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`flex items-center gap-2 mb-4 h-14 pl-4 cursor-pointer  outline-blue-300 ${
-                  pathname === link.href
-                    ? "bg-blue-100 border border-blue-300"
-                    : ""
+                className={`mb-4 flex h-14 cursor-pointer items-center gap-2 pl-4 outline-blue-300 ${
+                  pathName === link.href
+                    ? "border border-blue-300 bg-blue-100 text-blue-600"
+                    : "text-gray-500"
                 }`}
               >
                 <span>{link.icon}</span>
@@ -58,12 +58,12 @@ export default function DashboardAside() {
       <div className="absolute bottom-4 left-4 flex items-center gap-2">
         <Image
           src={"assets/images/avatar.svg"}
-          className="border-2 border-blue-600 "
+          className="border-2 border-blue-600"
           alt="Logo"
           width={54}
           height={54}
         />
-        <div className="flex flex-col ">
+        <div className="flex flex-col">
           <span className="text-sm text-blue-600">{session?.username}</span>
           <span className="text-sm">{session?.email}</span>
         </div>

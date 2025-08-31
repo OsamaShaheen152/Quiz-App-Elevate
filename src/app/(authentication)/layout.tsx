@@ -1,4 +1,4 @@
-import AuthText from "./_components/AuthText";
+import AuthText from "./_components/auth-text";
 
 export default function AuthLayout({
   children,
@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <div className="flex max-h-screen items-center gap-x-32 m-auto">
       <AuthText />
-      <div className="flex items-center justify-center"> {children}</div>
+      <main className="flex items-center justify-center"> {children}</main>
     </div>
   );
 }

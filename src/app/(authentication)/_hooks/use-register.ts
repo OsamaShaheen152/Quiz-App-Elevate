@@ -4,23 +4,25 @@ import { useMutation } from "@tanstack/react-query";
 export function useRegister() {
   return useMutation({
     mutationFn: async (data: RegisterFormValues) => {
+      console.log(data);
       const response = await fetch(
         "https://exam.elevateegy.com/api/v1/auth/signup",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "accept-language": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
+        throw new Error("Registration failed");
       }
 
-      return response.json();
+      const payload = response.json();
+      return payload;
     },
   });
 }

@@ -31,13 +31,12 @@ export interface QuizApiResponse {
 
 export interface Answer {
   questionId: string;
-  selectedAnswer: string; // For single choice, store the key (A1, A2, etc.)
-  selectedAnswers?: string[]; // For multiple choice, store array of keys
+  correct: string; // For single choice, store the key (A1, A2, etc.)
 }
 
 export interface QuizSubmission {
-  examId: string;
   answers: Answer[];
+  time?: number;
 }
 
 export interface QuizResult {

@@ -7,18 +7,18 @@ interface QuizQuestionProps {
   question: Question;
   selectedAnswer: string | undefined;
   onAnswerSelect: (answer: string) => void;
-  questionIndex: number;
+  questionIndex?: number;
 }
 
 export function QuizQuestion({
   question,
   selectedAnswer,
   onAnswerSelect,
-}: // questionIndex,
-QuizQuestionProps) {
+  // questionIndex,
+}: QuizQuestionProps) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-      <h3 className="text-xl font-medium text-gray-800 mb-6">
+    <div className="mb-6 rounded-lg border bg-white p-6 shadow-sm">
+      <h3 className="mb-6 text-xl font-medium text-gray-800">
         {question.question}
       </h3>
 
@@ -29,10 +29,10 @@ QuizQuestionProps) {
           return (
             <label
               key={answerOption.key}
-              className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition-colors ${
+              className={`flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors ${
                 isSelected
-                  ? "bg-gray-50 border border-gray-300"
-                  : "hover:bg-gray-50 border border-transparent"
+                  ? "border border-gray-300 bg-gray-50"
+                  : "border border-transparent hover:bg-gray-50"
               }`}
             >
               <input
@@ -41,9 +41,9 @@ QuizQuestionProps) {
                 value={answerOption.key}
                 checked={isSelected}
                 onChange={() => onAnswerSelect(answerOption.key)}
-                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-gray-700 text-base">
+              <span className="text-base text-gray-700">
                 {answerOption.answer}
               </span>
             </label>

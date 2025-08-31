@@ -106,12 +106,14 @@ export function Quiz({ examId }: QuizProps) {
       // Transform user answers to API format
       const answers: Answer[] = quizData.questions.map((question) => ({
         questionId: question._id,
-        selectedAnswer: userAnswers[question._id] || "", // Use empty string if no answer selected
+        correct: userAnswers[question._id] || "", // Use empty string if no answer selected
       }));
 
+      console.log("Transformed answers:", answers);
+
       const submission: QuizSubmission = {
-        examId: quizData.questions[0].exam._id,
         answers,
+        time: 0,
       };
 
       console.log("Final submission object:", submission);

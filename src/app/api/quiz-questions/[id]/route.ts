@@ -1,25 +1,35 @@
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } },
 ) {
   const { id } = params;
+
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!token?.accessToken) {
+    return NextResponse.json(
+      { message: "Unauthorized From client" },
+      { status: 401 },
+    );
+  }
 
   const response = await fetch(
     `https://exam.elevateegy.com/api/v1/questions?exam=${id}`,
     {
       method: "GET",
       headers: {
-        token: process.env.TOKEN!,
+        token: token.accessToken,
       },
-    }
+    },
   );
 
   if (!response.ok) {
     return NextResponse.json(
       { error: "Failed to fetch questions" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

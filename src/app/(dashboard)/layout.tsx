@@ -7,12 +7,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex min-h-screen">
       <DashboardAside />
+
       {/* Main Content */}
-      <div className="translate-x-96 w-[990px]">
+      <div className="w-[990px] translate-x-96">
         <Breadcrumb />
-        {children}
+
+        <main>{children}</main>
       </div>
     </div>
   );

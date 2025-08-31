@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { LoginResponse } from "./lib/types/auth";
+import { ApiResponse } from "./lib/types/api";
 
 export const authOptions: NextAuthOptions = {
   pages: {
