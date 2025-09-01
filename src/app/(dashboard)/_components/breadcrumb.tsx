@@ -8,7 +8,7 @@ export default function Breadcrumb() {
   const pathArray = pathname.split("/").filter((x) => x);
 
   return (
-    <nav className="text-sm text-gray-500">
+    <nav className="w-full bg-white p-4 text-sm text-gray-500">
       <ol className="flex items-center gap-1">
         <li>
           <Link href="/diplomas" className="hover:underline">
@@ -17,17 +17,17 @@ export default function Breadcrumb() {
         </li>
 
         {pathArray.map((segment, index) => {
-          const href = "/" + pathArray.slice(0, index + 1).join("/");
+          const href = pathArray.slice(0, index + 1).join("/");
           const isLast = index === pathArray.length - 1;
 
           return (
             <li
               key={href}
-              className="flex items-center gap-1 font-normal text-sm"
+              className="flex items-center gap-1 text-sm font-normal capitalize"
             >
               <span>/</span>
               {isLast ? (
-                <span className="text-blue-600 ">
+                <span className="text-blue-600">
                   {decodeURIComponent(segment.replace("-", " "))}
                 </span>
               ) : (

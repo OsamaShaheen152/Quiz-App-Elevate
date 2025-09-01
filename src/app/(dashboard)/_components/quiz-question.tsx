@@ -17,8 +17,8 @@ export function QuizQuestion({
   // questionIndex,
 }: QuizQuestionProps) {
   return (
-    <div className="mb-6 rounded-lg border bg-white p-6 shadow-sm">
-      <h3 className="mb-6 text-xl font-medium text-gray-800">
+    <div className="mb-6 p-6">
+      <h3 className="mb-6 text-2xl font-semibold text-blue-600">
         {question.question}
       </h3>
 
@@ -29,10 +29,8 @@ export function QuizQuestion({
           return (
             <label
               key={answerOption.key}
-              className={`flex cursor-pointer items-center space-x-3 rounded-lg p-3 transition-colors ${
-                isSelected
-                  ? "border border-gray-300 bg-gray-50"
-                  : "border border-transparent hover:bg-gray-50"
+              className={`flex cursor-pointer items-center space-x-3 p-3 transition-colors ${
+                isSelected ? "bg-gray-50" : "hover:bg-gray-50"
               }`}
             >
               <input

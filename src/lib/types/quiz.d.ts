@@ -17,7 +17,6 @@ export interface Question {
   _id: string;
   question: string;
   answers: AnswerOption[];
-  // type: "single_choice" | "multiple_choice";
   correct: string;
   subject: string | null;
   exam: Exam;
@@ -31,7 +30,7 @@ export interface QuizApiResponse {
 
 export interface Answer {
   questionId: string;
-  correct: string; // For single choice, store the key (A1, A2, etc.)
+  correct: string;
 }
 
 export interface QuizSubmission {

@@ -42,7 +42,7 @@ export default function DashboardAside() {
               <Link
                 href={link.href}
                 className={`mb-4 flex h-14 cursor-pointer items-center gap-2 pl-4 outline-blue-300 ${
-                  pathName === link.href
+                  pathName.includes(link.href)
                     ? "border border-blue-300 bg-blue-100 text-blue-600"
                     : "text-gray-500"
                 }`}

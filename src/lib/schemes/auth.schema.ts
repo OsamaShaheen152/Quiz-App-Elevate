@@ -20,3 +20,10 @@ export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
       message: "Minimum eight characters, at least one letter and one number",
     }),
  */
+
+export const loginSchema = z.object({
+  email: z.email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+export type LoginFormInput = z.infer<typeof loginSchema>;

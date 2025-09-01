@@ -27,14 +27,19 @@ export default function Diplomas() {
       loader={<p>Loading more...</p>}
     >
       <div>
+        {/* Loading */}
         {isLoading && <p>Loading...</p>}
+
+        {/* Error */}
         {error && <p className="text-red-500">Error: {error.message}</p>}
+
+        {/* Diplomas */}
         {diplomas && (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             {allSubjects.map((diploma) => (
               <li
                 key={diploma._id}
-                className="cursor-pointer relative"
+                className="relative cursor-pointer"
                 onClick={() => {
                   return router.push(`/exams/${diploma._id}`);
                 }}
@@ -44,9 +49,9 @@ export default function Diplomas() {
                   alt={diploma.name}
                   width={336}
                   height={448}
-                  className="w-80 h-[448px] object-fit "
+                  className="object-fit h-[448px] w-80"
                 />
-                <span className="absolute bottom-3 left-3 right-3 text-white bg-[#155DFC80] py-5 pl-4 pr-16 text-xl font-semibold ">
+                <span className="absolute bottom-3 left-3 right-3 bg-[#155DFC80] py-5 pl-4 pr-16 text-xl font-semibold text-white">
                   {diploma.name}
                 </span>
               </li>
@@ -54,13 +59,14 @@ export default function Diplomas() {
           </ul>
         )}
 
+        {/* Navigation  */}
         {hasNextPage ? (
-          <div className="flex flex-col items-center  text-gray-600 text-lg font-light">
-            <p className="text-center my-2 ">Scroll to view more</p>
+          <div className="flex flex-col items-center text-lg font-light text-gray-600">
+            <p className="my-2 text-center">Scroll to view more</p>
             <ChevronDown />
           </div>
         ) : (
-          <p className="text-gray-600 text-center text-lg font-light my-3">
+          <p className="my-3 text-center text-lg font-light text-gray-600">
             End Of List
           </p>
         )}

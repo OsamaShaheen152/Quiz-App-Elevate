@@ -24,7 +24,6 @@ import { Toaster } from "@/components/ui/toaster";
 export default function ChangePassword() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
-  // const [showToast, setshowToast] = useState<boolean>(false);
 
   const form = useForm<ChangePasswordInput>({
     defaultValues: {

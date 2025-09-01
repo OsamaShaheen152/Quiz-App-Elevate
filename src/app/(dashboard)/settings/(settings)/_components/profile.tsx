@@ -13,6 +13,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Card } from "@/components/ui/card";
 import { PhoneInput } from "@/app/(authentication)/_components/phone-input";
 import { useUserInfo } from "../_hooks/use-user-info";
+import { useEffect } from "react";
+import { useEditUserInfo } from "../_hooks/use-edit-user-info";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UserInfoType = {
   username: string;
@@ -24,10 +27,36 @@ type UserInfoType = {
 
 export default function Profile() {
   const { data, isLoading } = useUserInfo();
+  const userInfoMutation = useEditUserInfo();
+  const queryClient = useQueryClient();
+
+  // Initialize form
+  const form = useForm<UserInfoType>({
+    defaultValues: {
+      username: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    },
+  });
+
+  // Populate form with user data when available
+  useEffect(() => {
+    if (data?.user) {
+      form.reset({
+        username: data?.user.username || "",
+        firstName: data?.user.firstName || "",
+        lastName: data?.user.lastName || "",
+        email: data?.user.email || "",
+        phone: data?.user.phone || "",
+      });
+    }
+  }, [form, data]);
 
   // Show loading state
   if (isLoading) {
-    return <Card className="p-4">Loading...</Card>;
+    return <p className="p-4 text-center">Loading...</p>;
   }
 
   // If no data is available
@@ -35,21 +64,16 @@ export default function Profile() {
     return <Card className="p-4">Failed to load user data.</Card>;
   }
 
-  const form = useForm<UserInfoType>({
-    defaultValues: {
-      username: data.user.username || "",
-      firstName: data.user.firstName || "",
-      lastName: data.user.lastName || "",
-      email: data.user.email || "",
-      phone: data.user.phone || "",
-    },
-  });
-
   console.log(data.user);
 
   // Handle form submission
   const onSubmit: SubmitHandler<UserInfoType> = async (data: UserInfoType) => {
     console.log(data);
+    userInfoMutation.mutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+      },
+    });
   };
 
   return (

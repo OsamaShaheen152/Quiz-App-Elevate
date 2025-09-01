@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Answer, QuizResult, QuizSubmission } from "@/lib/types/quiz";
 import { useQuiz } from "../_hooks/use-quiz";
 import { useSubmitQuiz } from "../_hooks/use-submit-quiz";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 // types
 interface QuizProps {
@@ -57,29 +59,8 @@ export function Quiz({ examId }: QuizProps) {
         [currentQuestionData._id]: answer,
       }));
     },
-    [currentQuestionData, isSubmitting]
+    [currentQuestionData, isSubmitting],
   );
-
-  // Handle time up - auto submit quiz
-  const handleTimeUp = useCallback(async () => {
-    if (isSubmittingRef.current) return; // Prevent multiple submissions
-
-    console.log("Time is up! Auto-submitting quiz...");
-    setTimeUp(true);
-    await submitQuiz();
-    setShowResults(true);
-  }, []);
-
-  const handleNext = async () => {
-    if (isSubmitting) return;
-
-    if (currentQuestion < totalQuestions - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Submit quiz on last question
-      await submitQuiz();
-    }
-  };
 
   const handlePrevious = () => {
     if (currentQuestion > 0 && !isSubmitting) {
@@ -91,7 +72,7 @@ export function Quiz({ examId }: QuizProps) {
     if (!quizData || isSubmittingRef.current) {
       console.log(
         "Cannot submit:",
-        !quizData ? "No quiz data" : "Already submitting"
+        !quizData ? "No quiz data" : "Already submitting",
       );
       return;
     }
@@ -143,6 +124,27 @@ export function Quiz({ examId }: QuizProps) {
     }
   };
 
+  const handleNext = async () => {
+    if (isSubmitting) return;
+
+    if (currentQuestion < totalQuestions - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      // Submit quiz on last question
+      await submitQuiz();
+    }
+  };
+
+  // Handle time up - auto submit quiz
+  const handleTimeUp = useCallback(async () => {
+    if (isSubmittingRef.current) return; // Prevent multiple submissions
+
+    console.log("Time is up! Auto-submitting quiz...");
+    setTimeUp(true);
+    await submitQuiz();
+    setShowResults(true);
+  }, []);
+
   const handleRetakeQuiz = () => {
     setShowResults(false);
     setQuizResult(null);
@@ -161,9 +163,14 @@ export function Quiz({ examId }: QuizProps) {
     }
   };
 
+  const exam = quizData?.questions[0].exam;
+  const currentAnswer = currentQuestionData
+    ? userAnswers[currentQuestionData._id]
+    : undefined;
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-lg">Loading quiz...</div>
       </div>
     );
@@ -171,8 +178,8 @@ export function Quiz({ examId }: QuizProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-6 shadow-sm text-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="rounded-lg bg-white p-6 text-center shadow-sm">
           <p className="text-red-600">Failed to load quiz. Please try again.</p>
         </div>
       </div>
@@ -181,8 +188,8 @@ export function Quiz({ examId }: QuizProps) {
 
   if (!quizData || !quizData.questions.length) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-6 shadow-sm text-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="rounded-lg bg-white p-6 text-center shadow-sm">
           <p>No quiz questions found.</p>
         </div>
       </div>
@@ -197,73 +204,33 @@ export function Quiz({ examId }: QuizProps) {
         userAnswers={userAnswers}
         onRetakeQuiz={handleRetakeQuiz}
         onExplore={handleExplore}
+        currentQuestion={currentQuestion}
+        totalQuestions={totalQuestions}
+        exam={exam}
       />
     );
   }
 
-  const exam = quizData.questions[0].exam;
-  const currentAnswer = currentQuestionData
-    ? userAnswers[currentQuestionData._id]
-    : undefined;
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-blue-600 text-white p-4">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <div className="flex items-center space-x-3">
-            <Button
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-              className="w-8 h-8 rounded-full border border-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-500 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <span className="font-medium">[{exam.title}] Questions</span>
+    <div className="min-h-screen w-full bg-white p-4">
+      {/* Progress Bar */}
+      <div className="pb-2">
+        <div>
+          <div className="flex justify-between">
+            <div className="mb-1 text-xs text-gray-500">{exam?.title}</div>
+            <div className="mb-1 text-xs text-gray-500">
+              Question{" "}
+              <span className="text-blue-600">{currentQuestion + 1}</span> of{" "}
+              {totalQuestions}
             </div>
           </div>
-          <div className="text-sm">
-            Question {currentQuestion + 1} of {totalQuestions}
-          </div>
-        </div>
-      </div>
 
-      {/* Progress Bar */}
-      <div className="bg-blue-600 pb-2">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-xs text-blue-200 mb-1">{exam.title}</div>
-          <div className="w-full bg-blue-500 rounded-full h-2">
-            <div
-              className={`w-[${
-                ((currentQuestion + 1) / totalQuestions) * 100
-              }%] bg-blue-300 h-2 rounded-full transition-all duration-300 ease-out`}
-            ></div>
-          </div>
+          <Progress value={(currentQuestion / totalQuestions) * 100} />
         </div>
       </div>
 
       {/* Question Content */}
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="py-6">
         {currentQuestionData && (
           <QuizQuestion
             question={currentQuestionData}
@@ -274,59 +241,54 @@ export function Quiz({ examId }: QuizProps) {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mt-8">
-          <button
+        <div className="mt-8 flex items-center justify-between gap-4">
+          <Button
             type="button"
             onClick={handlePrevious}
             disabled={currentQuestion === 0}
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors"
+            className="bg-gray-200 text-gray-400 hover:text-white"
           >
+            <ChevronLeft className="mt-1" />
             Previous
-          </button>
+          </Button>
 
           {/* Timer */}
           <div className="flex items-center">
-            <QuizTimer initialMinutes={exam.duration} onTimeUp={handleTimeUp} />
+            <QuizTimer
+              initialMinutes={exam!.duration}
+              onTimeUp={handleTimeUp}
+            />
           </div>
 
-          <button
+          <Button
             type="button"
             onClick={handleNext}
             disabled={(!currentAnswer && !timeUp) || isSubmitting} // Allow submission if time is up even without answer
-            className="px-8 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors flex items-center space-x-2"
           >
             <span>
               {isSubmitting
                 ? "Submitting..."
                 : currentQuestion === totalQuestions - 1
-                ? "Finish"
-                : "Next"}
+                  ? "Finish"
+                  : "Next"}
             </span>
-            {!isSubmitting && (
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-          </button>
+            {!isSubmitting && <ChevronRight className="mt-1" />}
+          </Button>
         </div>
       </div>
 
       {/* Error Display */}
       {showError && submitQuizMutation.error && (
-        <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg max-w-sm">
+        <div className="fixed bottom-4 right-4 max-w-sm rounded-lg border border-red-400 bg-red-100 px-4 py-3 text-red-700 shadow-lg">
           <div className="font-medium">Submission Error</div>
-          <div className="text-sm mt-1">
+          <div className="mt-1 text-sm">
             {submitQuizMutation.error instanceof Error
               ? submitQuizMutation.error.message
               : "Failed to submit quiz. Please try again."}
           </div>
           <button
             onClick={() => submitQuiz()}
-            className="mt-2 text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+            className="mt-2 rounded bg-red-600 px-2 py-1 text-xs text-white hover:bg-red-700"
           >
             Retry
           </button>
@@ -335,11 +297,11 @@ export function Quiz({ examId }: QuizProps) {
 
       {/* Loading overlay when submitting */}
       {isSubmitting && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-center shadow-xl">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="rounded-lg bg-white p-8 text-center shadow-xl">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
             <p className="text-lg font-medium">Submitting your quiz...</p>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Please wait, do not close this window
             </p>
           </div>
@@ -348,7 +310,7 @@ export function Quiz({ examId }: QuizProps) {
 
       {/* Time up notification */}
       {timeUp && (
-        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg">
+        <div className="fixed right-4 top-4 rounded-lg border border-red-400 bg-red-100 px-4 py-3 text-red-700 shadow-lg">
           <div className="font-medium">Time&apos;s Up!</div>
           <div className="text-sm">
             Your quiz has been automatically submitted.

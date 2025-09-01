@@ -10,19 +10,19 @@ export default function SettingsAsideNav() {
   // Links
   const links = [
     {
-      href: "/profile",
+      href: "/settings/profile",
       label: "Profile",
       icon: <UserRound />,
     },
     {
-      href: "/change-password",
+      href: "/settings/change-password",
       label: "Change password",
       icon: <Lock />,
     },
   ];
 
   return (
-    <aside className="relative h-screen w-80 bg-white px-2 pt-4">
+    <aside className="relative min-h-[calc(100vh-200px)] w-80 bg-white px-2 pt-4">
       <nav className="flex w-full flex-col">
         <ul>
           {links.map((link) => (
@@ -42,7 +42,7 @@ export default function SettingsAsideNav() {
           ))}
         </ul>
       </nav>
-      <div className="absolute bottom-16 left-0 right-0">
+      <div className="absolute bottom-8 left-0 right-0">
         <div className="flex justify-center">
           <LogOutBtn />
         </div>

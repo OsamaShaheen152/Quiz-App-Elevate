@@ -15,22 +15,24 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff, XCircle } from "lucide-react";
-import { LoginFormValues } from "@/lib/types/auth";
+import { LoginFormInput, loginSchema } from "@/lib/schemes/auth.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const form = useForm<LoginFormValues>({
+  const form = useForm<LoginFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
       email: "",
       password: "",
     },
+    resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormValues> = async (
-    data: LoginFormValues,
+  const onSubmit: SubmitHandler<LoginFormInput> = async (
+    data: LoginFormInput,
   ) => {
     try {
       const response = await signIn("credentials", {
@@ -56,7 +58,7 @@ export default function LoginForm() {
   }, []);
 
   return (
-    <Card className="w-authForms h-authFroms mt-10 border-0 shadow-none [&_*]:rounded-none">
+    <Card className="h-authFroms mt-10 w-authForms border-0 p-4 shadow-none [&_*]:rounded-none">
       <h1 className="mb-6 text-3xl font-bold">Login</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -65,13 +67,6 @@ export default function LoginForm() {
             <FormField
               control={form.control}
               name="email"
-              rules={{
-                required: "Your email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Please enter a valid email address",
-                },
-              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -91,9 +86,6 @@ export default function LoginForm() {
             <FormField
               control={form.control}
               name="password"
-              rules={{
-                required: "Your password is required",
-              }}
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
@@ -162,25 +154,3 @@ export default function LoginForm() {
     </Card>
   );
 }
-
-/**  try {
-      const response = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-        // callbackUrl:
-        //   new URLSearchParams(location.search).get("callbackUrl") ||
-        //   "/diplomas",
-      });
-
-      if (response?.error) {
-        setError(response.error); // Display specific error
-      } else if (response?.ok) {
-        // Redirect to desired page after successful login
-        // In authentication use location.href to make a full page refresh be ensure the session has been saved and avoid the use of nextjs router
-        location.href = "/diplomas"; // Or use Next.js router
-      }
-    } catch (error) {
-      setError("An unexpected error occurred");
-      console.error("Login error:", error);
-    } */
