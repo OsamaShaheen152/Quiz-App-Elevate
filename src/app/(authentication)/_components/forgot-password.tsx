@@ -22,11 +22,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useForgotPassword } from "../_hooks/use-forgot-password";
+import { useVerifyResetCode } from "../_hooks/use-verify-reset-code";
 
 type ForgotPasswordFormValues = {
   email: string;
   password: string;
   rePassword: string;
+  code: string;
 };
 
 export default function ForgotPassword() {
@@ -46,27 +48,44 @@ export default function ForgotPassword() {
       email: "",
       password: "",
       rePassword: "",
+      code: "",
     },
   });
 
   const forgotPasswordMutation = useForgotPassword();
-  const emailMutaionHandler = (email: string) => {
+  const verifyResetCodeMutation = useVerifyResetCode();
+
+  const emailMutationHandler = (email: string) => {
     forgotPasswordMutation.mutate(email);
     console.log(email);
   };
 
+  // Submit handler
   const onSubmit: SubmitHandler<ForgotPasswordFormValues> = (
     data: ForgotPasswordFormValues,
   ) => {
-    forgotPasswordMutation.mutate(data.email, {
-      onSuccess: () => {
-        handleNextStep();
-      },
-    });
+    if (currentStep === 1) {
+      forgotPasswordMutation.mutate(data.email, {
+        onSuccess: () => {
+          handleNextStep();
+        },
+      });
+    } else if (currentStep === 2) {
+      verifyResetCodeMutation.mutate(data.code, {
+        onSuccess: () => {
+          handleNextStep();
+        },
+        onError: (error) => {
+          console.error("OTP verification failed:", error);
+          form.setError("code", { message: "Invalid otp code" });
+        },
+      });
+    }
   };
+
   return (
     <div className="mt-24 h-authForms w-authForms space-y-4">
-      {/* Forgot */}
+      {/* Forgot password */}
       {currentStep === 1 && (
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
@@ -81,6 +100,7 @@ export default function ForgotPassword() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
+              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -103,15 +123,16 @@ export default function ForgotPassword() {
                       {/* Your form field */}
                     </FormControl>
                     <FormDescription />
-                    <FormMessage />
+                    <FormMessage className="translate-y-[-20px] transform" />
                   </FormItem>
                 )}
               />
 
+              {/* Send email  */}
               <Button
                 type="submit"
                 onClick={() => {
-                  emailMutaionHandler(form.watch("email"));
+                  emailMutationHandler(form.watch("email"));
                 }}
               >
                 <span>Continue</span> <MoveRight />
@@ -119,6 +140,7 @@ export default function ForgotPassword() {
             </form>
           </Form>
 
+          {/* Register */}
           <div className="flex items-center justify-center gap-2">
             <p>Don’t have an account? </p>
             <Link
@@ -140,45 +162,70 @@ export default function ForgotPassword() {
           >
             <MoveLeft />
           </Button>
+
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold">Verify OTP</h1>
             <p className="text-base font-normal text-gray-500">
-              Please enter the 6-digits code we have sent to:{" "}
-              {form.watch("email")}
+              Please enter the 6-digit code we sent to: {form.watch("email")}
             </p>
           </div>
 
-          {/*  OTP  */}
-          <div className="flex flex-col items-center gap-6">
-            <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
+              <FormField
+                control={form.control}
+                name="code"
+                rules={{
+                  required: "OTP code is required",
+                  minLength: {
+                    value: 6,
+                    message: "OTP must be 6 digits",
+                  },
+                }}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-center gap-6">
+                    <FormControl>
+                      <InputOTP
+                        maxLength={6}
+                        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                        value={field.value}
+                        onChange={(value) => field.onChange(value)}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Resend OTP */}
-            <div className="flex items-center justify-center gap-2">
-              {/* <p className="text-base font-normal text-gray-500">
-                You can request another code in: 60s
-              </p> */}
-              <p className="text-base font-normal text-gray-500">
-                Didn’t receive the code?{" "}
-              </p>
-              <button className="text-sm text-blue-600 hover:underline">
-                Resend
-              </button>
-            </div>
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-base font-normal text-gray-500">
+                  Didn’t receive the code?{" "}
+                </p>
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline"
+                  onClick={() =>
+                    forgotPasswordMutation.mutate(form.watch("email"))
+                  }
+                >
+                  Resend
+                </button>
+              </div>
 
-            {/* Verify code */}
-            <div className="flex w-full flex-col gap-8">
-              <Button type="submit" onClick={handleNextStep}>
-                <span> Verify Code</span>
-
+              <Button type="submit">
+                <span>Verify Code</span>
                 <MoveRight />
               </Button>
 
@@ -188,12 +235,11 @@ export default function ForgotPassword() {
                   href="/register"
                   className="text-sm text-blue-600 hover:underline"
                 >
-                  {" "}
                   Create yours
                 </Link>
               </div>
-            </div>
-          </div>
+            </form>
+          </Form>
         </div>
       )}
 

@@ -43,9 +43,7 @@ export const registerSchema = z
     rePassword: z
       .string()
       .min(6, "Password must be at least 6 characters long"),
-    phone: z
-      .string()
-      .min(10, "Phone number must be at least 10 characters long"),
+    phone: z.string().length(11, "Phone number must be 11 digits"),
   })
   .refine((data) => data.password === data.rePassword, {
     path: ["rePassword"],

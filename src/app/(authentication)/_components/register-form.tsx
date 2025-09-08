@@ -18,6 +18,7 @@ import { useRegister } from "../_hooks/use-register";
 import { PhoneInput } from "./phone-input";
 import { RegisterFormValues, registerSchema } from "@/lib/schemes/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { validatePhoneNumber } from "../_utils/validate-phone";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -149,8 +150,20 @@ export default function RegisterForm() {
                       defaultCountry="EG"
                       placeholder="Enter phone number"
                       {...field}
-                      // error={!!fieldState.error}
-                      onChange={(val) => field.onChange(val || "")}
+                      // Handles the phone number validation and formatting
+                      onChange={(val) => {
+                        const cleanedPhone = validatePhoneNumber(val);
+                        field.onChange(cleanedPhone || "");
+
+                        if (!cleanedPhone) {
+                          form.setError("phone", {
+                            type: "manual",
+                            message: "Phone number must be exactly 11 digits",
+                          });
+                        } else {
+                          form.clearErrors("phone");
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

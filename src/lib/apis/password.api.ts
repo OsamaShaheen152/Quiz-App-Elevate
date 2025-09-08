@@ -1,5 +1,3 @@
-// import { ChangePasswordInput } from "../schemes/auth.schema";
-
 // Forgot Password
 export async function forgotPassword(email: string) {
   const response = await fetch(
@@ -22,23 +20,27 @@ export async function forgotPassword(email: string) {
   return data;
 }
 
-// Change Password
-// export async function changePassword(data: ChangePasswordInput) {
-//   console.log(data);
-//   const response = await fetch("/api/change-password", {
-//     method: "PATCH",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "accept-language": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//   });
+// Verify reset code
+export async function verifyResetCode(data: string) {
+  // Send the user data to the api
+  const response = await fetch(
+    "https://exam.elevateegy.com/api/v1/auth/verifyResetCode",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // "accept-language":"application/json"
+      },
+      body: JSON.stringify({ data }),
+    },
+  );
 
-//   if (!response.ok) {
-//     throw new Error("Failed to Updata Password!!!!");
-//   }
+  // Check Errors
+  if (!response.ok) {
+    throw new Error("Failed to verify reset code!!!!");
+  }
 
-//   const payload = response.json();
+  const payload = await response.json();
 
-//   return payload;
-// }
+  return payload;
+}
