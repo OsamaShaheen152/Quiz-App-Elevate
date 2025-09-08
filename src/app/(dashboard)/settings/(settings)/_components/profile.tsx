@@ -72,6 +72,11 @@ export default function Profile() {
     userInfoMutation.mutate(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+        // Optional: Show success message (e.g., toast)
+      },
+      onError: (error) => {
+        console.error("Update failed:", error);
+        // Optional: Show error message to user
       },
     });
   };
@@ -194,7 +199,7 @@ export default function Profile() {
 
           <div className="flex items-center gap-4">
             <Button
-              type="submit"
+              type="button"
               variant="danger"
 
               // disabled={registerMutation.status === "pending"}

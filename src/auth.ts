@@ -3,6 +3,20 @@ import Credentials from "next-auth/providers/credentials";
 import { LoginResponse } from "./lib/types/auth";
 import { ApiResponse } from "./lib/types/api";
 
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+    _id?: string;
+    username?: string;
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+    phone?: string;
+    role?: string;
+    isVerified?: boolean;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
@@ -63,6 +77,7 @@ export const authOptions: NextAuthOptions = {
         phone: token.phone,
         role: token.role,
         isVerified: token.isVerified,
+        accessToken: token.accessToken, // we don't want to expose the accessToken in the session
       };
 
       return session;

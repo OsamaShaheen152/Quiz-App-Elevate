@@ -1,4 +1,4 @@
-import { ChangePasswordInput } from "../schemes/auth.schema";
+// import { ChangePasswordInput } from "../schemes/auth.schema";
 
 // Forgot Password
 export async function forgotPassword(email: string) {
@@ -23,22 +23,22 @@ export async function forgotPassword(email: string) {
 }
 
 // Change Password
-export async function changePassword(data: ChangePasswordInput) {
-  console.log(data);
-  const response = await fetch("/api/change-password", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "accept-language": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+// export async function changePassword(data: ChangePasswordInput) {
+//   console.log(data);
+//   const response = await fetch("/api/change-password", {
+//     method: "PATCH",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "accept-language": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   });
 
-  if (!response.ok) {
-    throw new Error("Failed to Updata Password!!!!");
-  }
+//   if (!response.ok) {
+//     throw new Error("Failed to Updata Password!!!!");
+//   }
 
-  const payload = response.json();
+//   const payload = response.json();
 
-  return payload;
-}
+//   return payload;
+// }

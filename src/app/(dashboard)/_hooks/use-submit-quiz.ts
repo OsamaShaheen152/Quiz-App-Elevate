@@ -1,5 +1,5 @@
-import { submitQuiz } from "@/lib/apis/quiz.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submitQuiz } from "../_actions/submit-quiz.action";
 
 export function useSubmitQuiz() {
   const queryClient = useQueryClient();

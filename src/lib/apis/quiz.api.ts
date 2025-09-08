@@ -1,4 +1,4 @@
-import { QuizApiResponse, QuizResult, QuizSubmission } from "../types/quiz";
+import { QuizApiResponse } from "../types/quiz";
 
 // todo: What is the purpose of the promise
 const API_BASE_URL = "http://localhost:3000";
@@ -16,20 +16,4 @@ export async function fetchQuizQuestions(
   const data = await res.json();
 
   return data;
-}
-
-// Todo: Submit quiz answers
-export async function submitQuiz(
-  submission: QuizSubmission,
-): Promise<QuizResult> {
-  const response = await fetch(`${API_BASE_URL}/api/quiz-submit`, {
-    method: "POST",
-    body: JSON.stringify(submission),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to submit quiz");
-  }
-
-  return response.json();
 }

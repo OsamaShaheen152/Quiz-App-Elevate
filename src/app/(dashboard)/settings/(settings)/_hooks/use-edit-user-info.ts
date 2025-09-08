@@ -1,5 +1,5 @@
-import { editUserInfo } from "@/lib/apis/user.api";
 import { useMutation } from "@tanstack/react-query";
+import { editUserInfo } from "../_actions/edit-user-info.action";
 
 export function useEditUserInfo() {
   return useMutation({

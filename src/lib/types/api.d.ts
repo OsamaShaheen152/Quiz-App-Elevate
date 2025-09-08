@@ -19,6 +19,8 @@ export interface PaginationMetadata {
 
 // Generic paginated response interface
 export interface PaginatedResponse<T> {
+  // fix subjects
+  subjects: unknown;
   exams: T[];
   metadata: PaginationMetadata;
 }

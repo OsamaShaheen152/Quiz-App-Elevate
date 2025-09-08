@@ -14,9 +14,10 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { RegisterFormValues } from "@/lib/types/auth";
 import { useRegister } from "../_hooks/use-register";
 import { PhoneInput } from "./phone-input";
+import { RegisterFormValues, registerSchema } from "@/lib/schemes/auth.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -31,6 +32,7 @@ export default function RegisterForm() {
       rePassword: "",
       phone: "",
     },
+    resolver: zodResolver(registerSchema),
   });
 
   const registerMutation = useRegister();
@@ -48,7 +50,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card className="max-h-screen w-authForms border-0 py-2 shadow-none [&_*]:rounded-none">
+    <Card className="min-h-screen w-authForms border-0 py-6 shadow-none [&_*]:rounded-none">
       <h1 className="mb-6 text-3xl font-bold">Create Account</h1>
       <Form {...form}>
         <form
@@ -62,7 +64,6 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="firstName"
-                rules={{ required: "First Name is required" }}
                 render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
@@ -82,7 +83,6 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="lastName"
-                rules={{ required: "Last Name is required" }}
                 render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
@@ -102,7 +102,6 @@ export default function RegisterForm() {
             {/* UserName */}
             <FormField
               control={form.control}
-              rules={{ required: "Username is required" }}
               name="username"
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -122,7 +121,6 @@ export default function RegisterForm() {
             {/* Email */}
             <FormField
               control={form.control}
-              rules={{ required: "Email is required" }}
               name="email"
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -143,9 +141,6 @@ export default function RegisterForm() {
             <FormField
               control={form.control}
               name="phone"
-              rules={{
-                required: "Your phone number is required",
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
@@ -166,7 +161,6 @@ export default function RegisterForm() {
             {/* Password */}
             <FormField
               control={form.control}
-              rules={{ required: "Password is required" }}
               name="password"
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -194,6 +188,7 @@ export default function RegisterForm() {
                       </button>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -201,7 +196,6 @@ export default function RegisterForm() {
             {/* Confirm Password */}
             <FormField
               control={form.control}
-              rules={{ required: "Confirm Password is required" }}
               name="rePassword"
               render={({ field, fieldState }) => (
                 <FormItem>
@@ -229,6 +223,7 @@ export default function RegisterForm() {
                       </button>
                     </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
