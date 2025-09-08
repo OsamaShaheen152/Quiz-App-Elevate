@@ -146,25 +146,7 @@ export default function RegisterForm() {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      defaultCountry="EG"
-                      placeholder="Enter phone number"
-                      {...field}
-                      // Handles the phone number validation and formatting
-                      onChange={(val) => {
-                        const cleanedPhone = validatePhoneNumber(val);
-                        field.onChange(cleanedPhone || "");
-
-                        if (!cleanedPhone) {
-                          form.setError("phone", {
-                            type: "manual",
-                            message: "Phone number must be exactly 11 digits",
-                          });
-                        } else {
-                          form.clearErrors("phone");
-                        }
-                      }}
-                    />
+                    <Input placeholder="01123456789" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
