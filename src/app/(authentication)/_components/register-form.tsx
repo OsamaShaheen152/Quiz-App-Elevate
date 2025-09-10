@@ -15,14 +15,15 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRegister } from "../_hooks/use-register";
-import { PhoneInput } from "./phone-input";
 import { RegisterFormValues, registerSchema } from "@/lib/schemes/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { validatePhoneNumber } from "../_utils/validate-phone";
+// import { validatePhoneNumber } from "../_utils/validate-phone";
 
 export default function RegisterForm() {
+  // States
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  // Form
   const form = useForm<RegisterFormValues>({
     defaultValues: {
       username: "",
@@ -36,6 +37,7 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
+  // Mutations
   const registerMutation = useRegister();
 
   // Handle form submission
@@ -67,8 +69,10 @@ export default function RegisterForm() {
                 name="firstName"
                 render={({ field, fieldState }) => (
                   <FormItem>
+                    {/* Label */}
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
+                      {/* Input */}
                       <Input
                         placeholder="Osama"
                         {...field}
@@ -86,8 +90,10 @@ export default function RegisterForm() {
                 name="lastName"
                 render={({ field, fieldState }) => (
                   <FormItem>
+                    {/* Label */}
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
+                      {/* Input */}
                       <Input
                         placeholder="Shaheen"
                         {...field}
@@ -106,8 +112,10 @@ export default function RegisterForm() {
               name="username"
               render={({ field, fieldState }) => (
                 <FormItem>
+                  {/* Label */}
                   <FormLabel>User Name</FormLabel>
                   <FormControl>
+                    {/* Input */}
                     <Input
                       placeholder="your_username"
                       {...field}
@@ -125,8 +133,10 @@ export default function RegisterForm() {
               name="email"
               render={({ field, fieldState }) => (
                 <FormItem>
+                  {/* Label */}
                   <FormLabel>Email</FormLabel>
                   <FormControl>
+                    {/* Input */}
                     <Input
                       placeholder="you@example.com"
                       {...field}
@@ -144,9 +154,11 @@ export default function RegisterForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
+                  {/* Label */}
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="01123456789" {...field} />
+                    {/* Input */}
+                    <Input placeholder="01020304050" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -159,9 +171,11 @@ export default function RegisterForm() {
               name="password"
               render={({ field, fieldState }) => (
                 <FormItem>
+                  {/* Label */}
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <div className="relative">
+                      {/* Input */}
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="*********"
@@ -194,9 +208,11 @@ export default function RegisterForm() {
               name="rePassword"
               render={({ field, fieldState }) => (
                 <FormItem>
+                  {/* Label */}
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <div className="relative">
+                      {/* Input */}
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="*********"
@@ -232,6 +248,7 @@ export default function RegisterForm() {
               Create Account
             </Button>
 
+            {/* Login */}
             <p>
               Already have an account?{" "}
               <Link

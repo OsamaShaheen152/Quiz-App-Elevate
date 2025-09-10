@@ -9,13 +9,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Card } from "@/components/ui/card";
-import { PhoneInput } from "@/app/(authentication)/_components/phone-input";
 import { useUserInfo } from "../_hooks/use-user-info";
 import { useEffect } from "react";
 import { useEditUserInfo } from "../_hooks/use-edit-user-info";
 import { useQueryClient } from "@tanstack/react-query";
+import { deleteAccount } from "../_actions/delete-account.action";
+import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { TriangleAlert } from "lucide-react";
 
 type UserInfoType = {
   username: string;
@@ -26,6 +40,10 @@ type UserInfoType = {
 };
 
 export default function Profile() {
+  // Router
+  const router = useRouter();
+
+  // Mutations and Queries
   const { data, isLoading } = useUserInfo();
   const userInfoMutation = useEditUserInfo();
   const queryClient = useQueryClient();
@@ -66,23 +84,51 @@ export default function Profile() {
 
   console.log(data.user);
 
+  // Handlers
+
   // Handle form submission
   const onSubmit: SubmitHandler<UserInfoType> = async (data: UserInfoType) => {
     console.log(data);
+
     userInfoMutation.mutate(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["userInfo"] });
-        // Optional: Show success message (e.g., toast)
       },
       onError: (error) => {
         console.error("Update failed:", error);
-        // Optional: Show error message to user
       },
     });
   };
 
+  // Handle delete account
+  const deleteAccountHandler = async () => {
+    const result = await deleteAccount();
+
+    if (result.success) {
+      toast({
+        description: (
+          <span className="flex items-center gap-2">
+            Your account has been deleted.
+          </span>
+        ),
+        className:
+          "bg-[#1b2733] text-white border-0 rounded-md shadow-md flex items-center gap-2 px-4 py-3",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+
+      router.push("/register");
+    } else {
+      toast({ title: "Error", description: result.message });
+    }
+  };
+
   return (
     <Card className="max-h-screen w-full border-0 py-2 pt-4 shadow-none [&_*]:rounded-none">
+      {/* Toaster */}
+      <Toaster />
+
+      {/* Form */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -183,13 +229,7 @@ export default function Profile() {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      defaultCountry="EG"
-                      placeholder="Enter phone number"
-                      {...field}
-                      // error={!!fieldState.error}
-                      onChange={(val) => field.onChange(val || "")}
-                    />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,22 +238,64 @@ export default function Profile() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button
-              type="button"
-              variant="danger"
+            {/* Dialog */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button type="button" variant="danger">
+                  Delete My Account
+                </Button>
+              </DialogTrigger>
 
-              // disabled={registerMutation.status === "pending"}
-            >
-              Delete My Account
-            </Button>
+              {/* Content */}
+              <DialogContent className="mx-auto flex flex-col justify-between rounded-lg border border-gray-300 p-4 sm:min-h-96 sm:max-w-xl">
+                <DialogHeader>
+                  {/* Title */}
+                  <DialogTitle className="mb-4 translate-y-5">
+                    <div className="flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-red-50">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                          <TriangleAlert className="h-8 w-8 text-red-600" />
+                        </div>
+                      </div>
+                    </div>
+                  </DialogTitle>
 
-            <Button
-              type="submit"
+                  {/* Description */}
+                  <DialogDescription className="mt-4 translate-y-5 text-center text-lg font-medium">
+                    <p className="text-red-600">
+                      Are you sure you want to delete your account?
+                    </p>
+                    <p className="text-gray-500">
+                      This action is permanent and cannot be undone.
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
 
-              // disabled={registerMutation.status === "pending"}
-            >
-              Save Changes
-            </Button>
+                {/* Footer */}
+                <DialogFooter className="border-t-2 border-gray-100 bg-gray-50 py-4 sm:justify-around [&_*]:rounded-none">
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="bg-gray-200 text-black"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={deleteAccountHandler}
+                    className="bg-red-600 text-white"
+                  >
+                    Yes, delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Button type="submit">Save Changes</Button>
           </div>
         </form>
       </Form>

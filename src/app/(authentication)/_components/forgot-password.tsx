@@ -23,6 +23,8 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useForgotPassword } from "../_hooks/use-forgot-password";
 import { useVerifyResetCode } from "../_hooks/use-verify-reset-code";
+import { useResetPassword } from "../_hooks/use-reset-password";
+import { useRouter } from "next/navigation";
 
 type ForgotPasswordFormValues = {
   email: string;
@@ -32,9 +34,14 @@ type ForgotPasswordFormValues = {
 };
 
 export default function ForgotPassword() {
+  // States
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  // Router
+  const router = useRouter();
+
+  // Steps handlers
   const handleNextStep = () => {
     setCurrentStep((prev) => prev + 1);
   };
@@ -43,6 +50,7 @@ export default function ForgotPassword() {
     setCurrentStep((prev) => prev - 1);
   };
 
+  // Form
   const form = useForm<ForgotPasswordFormValues>({
     defaultValues: {
       email: "",
@@ -52,8 +60,10 @@ export default function ForgotPassword() {
     },
   });
 
+  // Mutations
   const forgotPasswordMutation = useForgotPassword();
   const verifyResetCodeMutation = useVerifyResetCode();
+  const resetPasswordMutation = useResetPassword();
 
   const emailMutationHandler = (email: string) => {
     forgotPasswordMutation.mutate(email);
@@ -80,6 +90,24 @@ export default function ForgotPassword() {
           form.setError("code", { message: "Invalid otp code" });
         },
       });
+    } else if (currentStep === 3) {
+      resetPasswordMutation.mutate(
+        {
+          email: data.email,
+          newPassword: data.password,
+        },
+        {
+          onSuccess: () => {
+            router.push("/login");
+          },
+          onError: (error) => {
+            console.error("Reset password failed:", error);
+            form.setError("rePassword", {
+              message: "Failed to reset password",
+            });
+          },
+        },
+      );
     }
   };
 
@@ -342,7 +370,6 @@ export default function ForgotPassword() {
                           )}
                         </button>
                       </div>
-                      {/* Your form field */}
                     </FormControl>
                     <FormDescription />
                     <FormMessage />

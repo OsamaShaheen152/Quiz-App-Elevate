@@ -1,4 +1,4 @@
-import { RegisterFormValues } from "../schemes/auth.schema";
+import { RegisterFormValues } from "@/lib/schemes/auth.schema";
 
 export async function register(data: RegisterFormValues) {
   console.log("Registering user with data:", data);
