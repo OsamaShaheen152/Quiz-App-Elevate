@@ -11,11 +11,13 @@ export function QuizTimer({ initialMinutes, onTimeUp }: QuizTimerProps) {
   const totalTime = initialMinutes * 60;
 
   useEffect(() => {
+    // Handle time up
     if (timeLeft <= 0) {
       onTimeUp();
       return;
     }
 
+    // Timer
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);

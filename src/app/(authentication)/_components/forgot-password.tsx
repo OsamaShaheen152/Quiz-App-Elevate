@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Eye, EyeOff, MoveLeft, MoveRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useForgotPassword } from "../_hooks/use-forgot-password";
 import { useVerifyResetCode } from "../_hooks/use-verify-reset-code";
@@ -37,6 +37,7 @@ export default function ForgotPassword() {
   // States
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [resendTimeLeft, setResendTimeLeft] = useState(60);
 
   // Router
   const router = useRouter();
@@ -110,6 +111,18 @@ export default function ForgotPassword() {
       );
     }
   };
+
+  // Resend time left
+  useEffect(() => {
+    if (resendTimeLeft === 0) return;
+
+    const timer = setInterval(() => {
+      setResendTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      console.log("here timer");
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [resendTimeLeft]);
 
   return (
     <div className="mt-24 h-authForms w-authForms space-y-4">
@@ -239,17 +252,21 @@ export default function ForgotPassword() {
 
               <div className="flex items-center justify-center gap-2">
                 <p className="text-base font-normal text-gray-500">
-                  Didn’t receive the code?{" "}
+                  {resendTimeLeft
+                    ? `You can request another code in: ${resendTimeLeft}`
+                    : "Didn’t receive the code?"}
                 </p>
-                <button
-                  type="button"
-                  className="text-sm text-blue-600 hover:underline"
-                  onClick={() =>
-                    forgotPasswordMutation.mutate(form.watch("email"))
-                  }
-                >
-                  Resend
-                </button>
+                {!resendTimeLeft && (
+                  <button
+                    type="button"
+                    className="text-sm text-blue-600 hover:underline"
+                    onClick={() =>
+                      forgotPasswordMutation.mutate(form.watch("email"))
+                    }
+                  >
+                    Resend
+                  </button>
+                )}
               </div>
 
               <Button type="submit">
