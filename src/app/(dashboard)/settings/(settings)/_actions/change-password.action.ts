@@ -1,18 +1,16 @@
 "use server";
 
-import { authOptions } from "@/auth";
 import { ChangePasswordInput } from "@/lib/schemes/auth.schema";
-import { getServerSession } from "next-auth";
+import { getToken } from "@/lib/utils/get-token";
 
 export async function changePassword(data: ChangePasswordInput) {
   console.log("data is ", data);
 
-  // Get the session
-  const session = await getServerSession(authOptions);
-  console.log("session is  ", session);
+  // Get jwt
+  const jwt = await getToken();
 
-  // Get the token from the session
-  const token = session?.accessToken;
+  // Get the token from the jwt
+  const token = jwt?.accessToken;
   console.log("token is  ", token);
 
   if (!token || token === "") {

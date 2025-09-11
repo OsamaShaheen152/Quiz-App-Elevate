@@ -1,10 +1,12 @@
 "use server";
-import { authOptions } from "@/auth";
-import { getServerSession } from "next-auth";
+import { getToken } from "@/lib/utils/get-token";
 
 export async function deleteAccount() {
-  const session = await getServerSession(authOptions);
-  const token = session?.accessToken;
+  // Get jwt
+  const jwt = await getToken();
+
+  //Get token from jwt
+  const token = jwt?.accessToken;
 
   if (!token || token === "") {
     return { message: "Unauthorized From client" };

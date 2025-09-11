@@ -1,14 +1,13 @@
 "use server";
-import { authOptions } from "@/auth";
-import { getServerSession } from "next-auth";
+
+import { getToken } from "@/lib/utils/get-token";
 
 export async function editUserInfo(data: { [key: string]: string }) {
-  // Get session
-  const session = await getServerSession(authOptions);
-  console.log("session is ", session);
+  // Get jwt
+  const jwt = await getToken();
 
-  // Get token
-  const token = session?.accessToken;
+  // Get token from jwt
+  const token = jwt?.accessToken;
   console.log("token is ", token);
 
   if (!token) {

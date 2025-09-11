@@ -62,12 +62,14 @@ export function Quiz({ examId }: QuizProps) {
     [currentQuestionData, isSubmitting],
   );
 
+  // Previous handler
   const handlePrevious = () => {
     if (currentQuestion > 0 && !isSubmitting) {
       setCurrentQuestion(currentQuestion - 1);
     }
   };
 
+  // Submit quiz
   const submitQuiz = async () => {
     if (!quizData || isSubmittingRef.current) {
       console.log(
@@ -87,7 +89,7 @@ export function Quiz({ examId }: QuizProps) {
       // Transform user answers to API format
       const answers: Answer[] = quizData.questions.map((question) => ({
         questionId: question._id,
-        correct: userAnswers[question._id] || "", // Use empty string if no answer selected
+        correct: userAnswers[question._id] || "_", // Use empty string if no answer selected
       }));
 
       console.log("Transformed answers:", answers);
@@ -105,18 +107,6 @@ export function Quiz({ examId }: QuizProps) {
       setQuizResult(result);
     } catch (error) {
       console.error("Failed to submit quiz:", error);
-
-      // Fix: If submission fails, create a mock result to show user their answers
-      const mockResult = {
-        score: 0,
-        totalQuestions: totalQuestions,
-        percentage: 0,
-        passed: false,
-        feedback: "Quiz submission failed, but you can review your answers.",
-        correctAnswers: {},
-      };
-
-      setQuizResult(mockResult);
     } finally {
       setIsSubmitting(false);
       isSubmittingRef.current = false;
@@ -124,6 +114,7 @@ export function Quiz({ examId }: QuizProps) {
     }
   };
 
+  // Next handler
   const handleNext = async () => {
     if (isSubmitting) return;
 
@@ -136,15 +127,16 @@ export function Quiz({ examId }: QuizProps) {
   };
 
   // Handle time up - auto submit quiz
-  const handleTimeUp = useCallback(async () => {
+  const handleTimeUp = async () => {
     if (isSubmittingRef.current) return; // Prevent multiple submissions
 
     console.log("Time is up! Auto-submitting quiz...");
     setTimeUp(true);
     await submitQuiz();
     setShowResults(true);
-  }, []);
+  };
 
+  // Retake quiz handler
   const handleRetakeQuiz = () => {
     setShowResults(false);
     setQuizResult(null);
@@ -155,6 +147,7 @@ export function Quiz({ examId }: QuizProps) {
     isSubmittingRef.current = false;
   };
 
+  // Explore handler
   const handleExplore = () => {
     // Navigate to explore page
     console.log("Navigate to explore page");
@@ -163,11 +156,12 @@ export function Quiz({ examId }: QuizProps) {
     }
   };
 
-  const exam = quizData?.questions[0].exam;
+  const exam = quizData?.questions[0]?.exam;
   const currentAnswer = currentQuestionData
     ? userAnswers[currentQuestionData._id]
     : undefined;
 
+  // loading state
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -176,6 +170,7 @@ export function Quiz({ examId }: QuizProps) {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -186,6 +181,7 @@ export function Quiz({ examId }: QuizProps) {
     );
   }
 
+  // Handle no quiz data
   if (!quizData || !quizData.questions.length) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -196,16 +192,13 @@ export function Quiz({ examId }: QuizProps) {
     );
   }
 
-  if (showResults && quizResult) {
+  // Handle display results
+  if (showResults && quizResult && exam) {
     return (
       <QuizResultComponent
         result={quizResult}
-        questions={quizData.questions}
-        userAnswers={userAnswers}
         onRetakeQuiz={handleRetakeQuiz}
         onExplore={handleExplore}
-        currentQuestion={currentQuestion}
-        totalQuestions={totalQuestions}
         exam={exam}
       />
     );
@@ -217,7 +210,9 @@ export function Quiz({ examId }: QuizProps) {
       <div className="pb-2">
         <div>
           <div className="flex justify-between">
-            <div className="mb-1 text-xs text-gray-500">{exam?.title}</div>
+            <div className="mb-1 text-xs text-gray-500">
+              {exam?.title ?? ""}
+            </div>
             <div className="mb-1 text-xs text-gray-500">
               Question{" "}
               <span className="text-blue-600">{currentQuestion + 1}</span> of{" "}
@@ -260,6 +255,7 @@ export function Quiz({ examId }: QuizProps) {
             />
           </div>
 
+          {/* Next question and submission */}
           <Button
             type="button"
             onClick={handleNext}

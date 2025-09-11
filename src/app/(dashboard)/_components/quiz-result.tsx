@@ -1,38 +1,41 @@
 "use client";
 import React from "react";
-import type { QuizResult, Question } from "@/lib/types/quiz";
+import type { Exam, QuizResult } from "@/lib/types/quiz";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 interface QuizResultProps {
   result: QuizResult;
-  questions: Question[];
-  userAnswers: { [questionId: string]: string };
   onRetakeQuiz: () => void;
   onExplore: () => void;
-  currentQuestion: number;
-  totalQuestions: number;
-  exam: { [key: string]: string };
+  exam: Exam;
 }
 
 export function QuizResultComponent({
   result,
-  questions,
-  userAnswers,
   onRetakeQuiz,
   onExplore,
-  currentQuestion,
-  totalQuestions,
+
   exam,
 }: QuizResultProps) {
-  // Calculate correct and incorrect counts
-  const correctCount =
-    result.score ||
-    questions.reduce((count, question) => {
-      const userAnswer = userAnswers[question._id];
-      return count + (userAnswer === question.correct ? 1 : 0);
-    }, 0);
-  const incorrectCount = result.totalQuestions - result.score;
+  console.log(exam);
+  // Calculate correct
+  const correctCount = result?.correct;
+
+  // Incorrect count
+  const incorrectCount = result?.wrong;
+
+  // Total questions
+  const totalQuestions = correctCount + incorrectCount;
+
+  // Correct questions
+  const correctQuestions = result.correctQuestions;
+
+  // Wrong questions
+  const wrongQuestions = result.WrongQuestions;
+
+  console.log("incorrectCount:", incorrectCount);
+  console.log("result:", result);
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -42,9 +45,8 @@ export function QuizResultComponent({
           <div className="flex justify-between">
             <div className="mb-1 text-xs text-gray-500">{exam.title}</div>
             <div className="mb-1 text-xs text-gray-500">
-              Question{" "}
-              <span className="text-blue-600">{currentQuestion + 1}</span> of{" "}
-              {totalQuestions}
+              Question <span className="text-blue-600">{totalQuestions}</span>{" "}
+              of {totalQuestions}
             </div>
           </div>
 
@@ -55,7 +57,7 @@ export function QuizResultComponent({
       <div className="mx-auto flex max-w-4xl gap-6 p-4">
         {/* Left Side - Score Circle */}
         <div className="w-64">
-          <div className="rounded-lg bg-white p-6 shadow-sm">
+          <div className="rounded-lg bg-white p-6 shadow-md">
             <h2 className="text-blue- 600 mb-6 text-xl font-semibold">
               Results:
             </h2>
@@ -81,26 +83,27 @@ export function QuizResultComponent({
                   cy="50"
                   r="40"
                   stroke="#10b981"
-                  strokeWidth="8"
+                  strokeWidth="14"
                   fill="none"
                   strokeDasharray={`${
-                    (correctCount / result.totalQuestions) * 251.2
+                    (correctCount / totalQuestions) * 251.2
                   } 251.2`}
                   className="transition-all duration-1000 ease-out"
                 />
+
                 {/* Incorrect answers arc */}
                 <circle
                   cx="50"
                   cy="50"
                   r="40"
                   stroke="#ef4444"
-                  strokeWidth="8"
+                  strokeWidth="14"
                   fill="none"
                   strokeDasharray={`${
-                    (incorrectCount / result.totalQuestions) * 251.2
+                    (incorrectCount / totalQuestions) * 251.2
                   } 251.2`}
                   strokeDashoffset={`-${
-                    (correctCount / result.totalQuestions) * 251.2
+                    (correctCount / totalQuestions) * 251.2
                   }`}
                   className="transition-all duration-1000 ease-out"
                 />
@@ -128,38 +131,27 @@ export function QuizResultComponent({
         {/* Right Side - Questions Review */}
         <div className="flex-1">
           <div className="max-h-[500px] space-y-4 overflow-y-auto pr-2">
-            {questions.map((question) => {
-              const userAnswer = userAnswers[question._id];
-              const isCorrect = userAnswer === question.correct;
-              const correctAnswerText = question.answers.find(
-                (a) => a.key === question.correct,
-              )?.answer;
-              const userAnswerText = question.answers.find(
-                (a) => a.key === userAnswer,
-              )?.answer;
+            {/* Display correct questions */}
+            {correctQuestions.length &&
+              correctQuestions.map((question) => {
+                const correctAnswerText = question.correctAnswer;
+                console.log("correctAnswerText ", correctAnswerText);
 
-              return (
-                <div
-                  key={question._id}
-                  className="rounded-lg bg-white p-4 shadow-sm"
-                >
-                  <h3 className="mb-3 font-medium text-blue-600">
-                    {question.question}
-                  </h3>
+                return (
+                  <div
+                    key={question._id}
+                    className="rounded-lg bg-white p-4 shadow-sm"
+                  >
+                    <h3 className="mb-3 font-medium text-blue-600">
+                      {question.Question}
+                    </h3>
 
-                  <div className="space-y-2">
-                    {/* User's answer */}
-                    <div
-                      className={`flex items-center space-x-2 rounded p-2 ${
-                        isCorrect ? "bg-green-50" : "bg-red-50"
-                      }`}
-                    >
+                    <div className="space-y-2">
+                      {/* User's answer */}
                       <div
-                        className={`h-4 w-4 rounded-full ${
-                          isCorrect ? "bg-green-500" : "bg-red-500"
-                        }`}
+                        className={`flex items-center space-x-2 rounded bg-green-50 p-2`}
                       >
-                        {isCorrect ? (
+                        <div className={`h-4 w-4 rounded-full bg-green-500`}>
                           <svg
                             className="h-4 w-4 text-white"
                             fill="currentColor"
@@ -171,34 +163,64 @@ export function QuizResultComponent({
                               clipRule="evenodd"
                             />
                           </svg>
-                        ) : (
-                          <svg
-                            className="h-4 w-4 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="text-sm text-gray-700">
-                        {userAnswerText}
-                      </span>
-                    </div>
-
-                    {/* Correct answer if user was wrong */}
-                    {!isCorrect && (
-                      <div className="flex items-center space-x-2 rounded bg-green-50 p-2">
-                        <div className="h-4 w-4 rounded-full border-2 border-green-500"></div>
+                        </div>
                         <span className="text-sm text-gray-700">
                           {correctAnswerText}
                         </span>
                       </div>
-                    )}
+                    </div>
+                  </div>
+                );
+              })}
+
+            {/* Display wrong questions */}
+            {wrongQuestions.map((question) => {
+              const correctAnswerText = question.correctAnswer;
+              const inCorrectAnswer = question.inCorrectAnswer;
+
+              console.log("correctAnswerText ", correctAnswerText);
+              console.log("inCorrectAnswer ", inCorrectAnswer);
+
+              return (
+                <div
+                  key={question._id}
+                  className="rounded-lg bg-white p-4 shadow-sm"
+                >
+                  <h3 className="mb-3 font-medium text-blue-600">
+                    {question.Question}
+                  </h3>
+
+                  <div className="space-y-2">
+                    {/* User's answer */}
+                    <div
+                      className={`flex items-center space-x-2 rounded bg-red-50 p-2`}
+                    >
+                      <div className={`h-4 w-4 rounded-full bg-red-500`}>
+                        <svg
+                          className="h-4 w-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <span className="text-sm text-gray-700">
+                        {inCorrectAnswer}
+                      </span>
+                    </div>
+
+                    {/* Correct answer*/}
+
+                    <div className="flex items-center space-x-2 rounded bg-green-50 p-2">
+                      <div className="h-4 w-4 rounded-full border-2 border-green-500"></div>
+                      <span className="text-sm text-gray-700">
+                        {correctAnswerText}
+                      </span>
+                    </div>
                   </div>
                 </div>
               );

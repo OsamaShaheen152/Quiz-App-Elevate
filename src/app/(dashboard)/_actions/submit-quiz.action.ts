@@ -1,15 +1,11 @@
 "use server";
-import { authOptions } from "@/auth";
 import { QuizResult, QuizSubmission } from "@/lib/types/quiz";
-import { getServerSession } from "next-auth";
+import { getToken } from "@/lib/utils/get-token";
 
 export async function submitQuiz(data: QuizSubmission): Promise<QuizResult> {
-  // Get session
-  const session = await getServerSession(authOptions);
-  console.log("session is ", session);
-
   // Get token
-  const token = session?.accessToken;
+  const jwt = await getToken();
+  const token = jwt?.accessToken;
 
   // Check the token
   if (!token) {

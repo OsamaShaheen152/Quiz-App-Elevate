@@ -2,7 +2,7 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 // Protected routes that require authentication
-const protectedRoutes = ["/settings"];
+const publicRoutes = ["/login", "/register", "/forgot-password"];
 
 // Redirect to login page
 function redirectToLogin(req: NextRequest) {
@@ -13,15 +13,21 @@ function redirectToLogin(req: NextRequest) {
 
 // Middleware function
 export default async function middleware(req: NextRequest) {
-  //
-  // The secret is optional if you are using NEXTAUTH_SECRET naming convintion
+  // The secret is optional if you are using NEXTAUTH_SECRET naming convention
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  if (protectedRoutes.includes(req.nextUrl.pathname)) {
-    if (!token) {
-      return redirectToLogin(req);
-    }
-
-    return NextResponse.next();
+  if (!publicRoutes.includes(req.nextUrl.pathname) && !token) {
+    return redirectToLogin(req);
   }
+
+  if (publicRoutes.includes(req.nextUrl.pathname) && token) {
+    const url = new URL("/diplomas", req.nextUrl.origin);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};

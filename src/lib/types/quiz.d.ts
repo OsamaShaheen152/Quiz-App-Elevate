@@ -39,10 +39,19 @@ export interface QuizSubmission {
 }
 
 export interface QuizResult {
-  score: number;
-  totalQuestions: number;
-  percentage: number;
-  passed: boolean;
-  feedback?: string;
-  correctAnswers?: { [questionId: string]: string };
+  message: string;
+
+  WrongQuestions: Array<{ [key: string]: string }>;
+  correct: number;
+
+  correctQuestions: Array<{ [key: string]: string }>;
+  total: number;
+  wrong: number;
+
+  // score: number;
+  // totalQuestions: number;
+  // percentage: number;
+  // passed: boolean;
+  // feedback?: string;
+  // correctAnswers?: { [questionId: string]: string };
 }
