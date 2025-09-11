@@ -1,16 +1,22 @@
 "use client";
 
 import ExamApp from "@/components/shared/ExamApp";
-import { GraduationCap, UserRound } from "lucide-react";
+import { EllipsisVertical, GraduationCap, UserRound } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import DropdownBtns from "./dropdown-btns";
 
 export default function DashboardAside() {
+  // State
+  const [showDropdownBtns, setShowDropdownBtns] = useState(false);
+
   const pathName = usePathname();
   const { data: session } = useSession();
 
+  // Links array
   const links = [
     {
       href: "/diplomas",
@@ -24,8 +30,17 @@ export default function DashboardAside() {
     },
   ];
 
+  // Open dropdown handler
+  const dropdownHandler = () => {
+    setShowDropdownBtns((prev) => !prev);
+  };
+
   return (
     <aside className="fixed h-screen w-80 bg-blue-50 p-4">
+      <div className="relative">
+        {showDropdownBtns && <DropdownBtns dropdownHandler={dropdownHandler} />}
+      </div>
+
       <Image
         src={"assets/images/Final Logo 1.svg"}
         alt="Logo"
@@ -67,6 +82,11 @@ export default function DashboardAside() {
           <span className="text-sm text-blue-600">{session?.username}</span>
           <span className="text-sm">{session?.email}</span>
         </div>
+
+        <button onClick={dropdownHandler}>
+          {/* */}
+          <EllipsisVertical />
+        </button>
       </div>
     </aside>
   );

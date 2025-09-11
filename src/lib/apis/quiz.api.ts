@@ -1,6 +1,5 @@
 import { QuizApiResponse } from "../types/quiz";
 
-// todo: What is the purpose of the promise
 const API_BASE_URL = "http://localhost:3000";
 
 // Todo: Implement fetchQuizQuestions

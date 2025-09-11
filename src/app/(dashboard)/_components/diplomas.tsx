@@ -11,7 +11,15 @@ export default function Diplomas() {
   const { diplomas, isLoading, error, hasNextPage, fetchNextPage } =
     useDiplomas();
 
-  const allSubjects = diplomas?.pages.flatMap((page) => page.subjects) || [];
+  type Diploma = {
+    _id: string;
+    name: string;
+    icon: string;
+    // add other properties if needed
+  };
+
+  const allSubjects: Diploma[] =
+    diplomas?.pages.flatMap((page) => page.subjects as Diploma[]) || [];
 
   console.log(allSubjects);
 

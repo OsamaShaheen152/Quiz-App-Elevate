@@ -261,7 +261,7 @@ export default function Profile() {
                   </DialogTitle>
 
                   {/* Description */}
-                  <DialogDescription className="mt-4 translate-y-5 text-center text-lg font-medium">
+                  <DialogDescription className="translate-y-12 text-center text-lg font-medium">
                     <p className="text-red-600">
                       Are you sure you want to delete your account?
                     </p>

@@ -35,6 +35,7 @@ export default function LoginForm() {
     data: LoginFormInput,
   ) => {
     try {
+      console.log(data);
       const response = await signIn("credentials", {
         email: data.email,
         password: data.password,
