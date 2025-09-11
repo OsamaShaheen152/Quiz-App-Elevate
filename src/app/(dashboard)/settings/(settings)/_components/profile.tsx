@@ -30,6 +30,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { TriangleAlert } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 type UserInfoType = {
   username: string;
@@ -117,6 +118,8 @@ export default function Profile() {
 
       queryClient.invalidateQueries({ queryKey: ["userInfo"] });
 
+      // Remove the token from cookies
+      await signOut({ redirect: false });
       router.push("/register");
     } else {
       toast({ title: "Error", description: result.message });
