@@ -38,7 +38,7 @@ export function Quiz({ examId }: QuizProps) {
 
   // handle error timer
   useEffect(() => {
-    if (submitQuizMutation.error) {
+    if (submitQuizMutation?.error) {
       setShowError(true);
     }
 
@@ -47,7 +47,7 @@ export function Quiz({ examId }: QuizProps) {
     }, 1000 * 2);
 
     return () => clearTimeout(timer);
-  }, [submitQuizMutation.error]);
+  }, [submitQuizMutation?.error]);
 
   // Handle answer selection - store answers in state
   const handleAnswerSelect = useCallback(
@@ -56,7 +56,7 @@ export function Quiz({ examId }: QuizProps) {
 
       setUserAnswers((prev) => ({
         ...prev,
-        [currentQuestionData._id]: answer,
+        [currentQuestionData?._id]: answer,
       }));
     },
     [currentQuestionData, isSubmitting],
@@ -71,7 +71,7 @@ export function Quiz({ examId }: QuizProps) {
 
   // Submit quiz
   const submitQuiz = async () => {
-    if (!quizData || isSubmittingRef.current) {
+    if (!quizData || isSubmittingRef?.current) {
       return;
     }
 
@@ -80,8 +80,8 @@ export function Quiz({ examId }: QuizProps) {
 
     try {
       // Transform user answers to API format
-      const answers: Answer[] = quizData.questions.map((question) => ({
-        questionId: question._id,
+      const answers: Answer[] = quizData?.questions?.map((question) => ({
+        questionId: question?._id,
         correct: userAnswers[question._id] || "_", // Use empty string if no answer selected
       }));
 
@@ -90,7 +90,7 @@ export function Quiz({ examId }: QuizProps) {
         time: 0,
       };
 
-      const result = await submitQuizMutation.mutateAsync(submission);
+      const result = await submitQuizMutation?.mutateAsync(submission);
 
       setQuizResult(result);
     } catch (error) {
@@ -116,7 +116,7 @@ export function Quiz({ examId }: QuizProps) {
 
   // Handle time up - auto submit quiz
   const handleTimeUp = async () => {
-    if (isSubmittingRef.current) return; // Prevent multiple submissions
+    if (isSubmittingRef?.current) return; // Prevent multiple submissions
 
     setTimeUp(true);
     await submitQuiz();
@@ -260,12 +260,12 @@ export function Quiz({ examId }: QuizProps) {
       </div>
 
       {/* Error Display */}
-      {showError && submitQuizMutation.error && (
+      {showError && submitQuizMutation?.error && (
         <div className="fixed bottom-4 right-4 max-w-sm rounded-lg border border-red-400 bg-red-100 px-4 py-3 text-red-700 shadow-lg">
           <div className="font-medium">Submission Error</div>
           <div className="mt-1 text-sm">
-            {submitQuizMutation.error instanceof Error
-              ? submitQuizMutation.error.message
+            {submitQuizMutation?.error instanceof Error
+              ? submitQuizMutation?.error?.message
               : "Failed to submit quiz. Please try again."}
           </div>
           <button

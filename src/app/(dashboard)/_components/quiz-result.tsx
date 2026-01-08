@@ -29,10 +29,10 @@ export function QuizResultComponent({
   const totalQuestions = correctCount + incorrectCount;
 
   // Correct questions
-  const correctQuestions = result.correctQuestions;
+  const correctQuestions = result?.correctQuestions;
 
   // Wrong questions
-  const wrongQuestions = result.WrongQuestions;
+  const wrongQuestions = result?.WrongQuestions;
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -40,7 +40,7 @@ export function QuizResultComponent({
       <div className="pb-2">
         <div>
           <div className="flex justify-between">
-            <div className="mb-1 text-xs text-gray-500">{exam.title}</div>
+            <div className="mb-1 text-xs text-gray-500">{exam?.title}</div>
             <div className="mb-1 text-xs text-gray-500">
               Question <span className="text-blue-600">{totalQuestions}</span>{" "}
               of {totalQuestions}
@@ -131,15 +131,15 @@ export function QuizResultComponent({
             {/* Display correct questions */}
             {correctQuestions?.length &&
               correctQuestions?.map((question) => {
-                const correctAnswerText = question.correctAnswer;
+                const correctAnswerText = question?.correctAnswer;
 
                 return (
                   <div
-                    key={question._id}
+                    key={question?._id}
                     className="rounded-lg bg-white p-4 shadow-sm"
                   >
                     <h3 className="mb-3 font-medium text-blue-600">
-                      {question.Question}
+                      {question?.Question}
                     </h3>
 
                     <div className="space-y-2">
@@ -171,15 +171,15 @@ export function QuizResultComponent({
 
             {/* Display wrong questions */}
             {wrongQuestions?.map((question) => {
-              const correctAnswerText = question.correctAnswer;
-              const inCorrectAnswer = question.inCorrectAnswer;
+              const correctAnswerText = question?.correctAnswer;
+              const inCorrectAnswer = question?.inCorrectAnswer;
               return (
                 <div
-                  key={question._id}
+                  key={question?._id}
                   className="rounded-lg bg-white p-4 shadow-sm"
                 >
                   <h3 className="mb-3 font-medium text-blue-600">
-                    {question.Question}
+                    {question?.Question}
                   </h3>
 
                   <div className="space-y-2">
