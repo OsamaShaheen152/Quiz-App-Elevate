@@ -4,16 +4,16 @@ import useExams from "../_hooks/use-exams";
 import { ChevronDown, Timer } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function Exams({ subjectId }: { subjectId: string }) {
+export default function Exams() {
+  // Router
   const router = useRouter();
 
-  const { payload, isLoading, error, hasNextPage, fetchNextPage } =
-    useExams(subjectId);
+  // Fetch Exams
+  const { payload, isLoading, error, hasNextPage, fetchNextPage } = useExams();
 
-  console.log("subjectId From Exams component ", subjectId);
-
-  const allSubjectExams = payload?.pages?.flatMap((page) => page?.exams) || [];
-  console.log(allSubjectExams);
+  // Flatten exams array
+  const allSubjectExams =
+    payload?.pages?.flatMap((page) => page?.exams).slice(0, 3) || [];
 
   return (
     <InfiniteScroll
@@ -28,18 +28,17 @@ export default function Exams({ subjectId }: { subjectId: string }) {
         {error && <p className="text-red-500">Error: {error.message}</p>}
 
         {allSubjectExams && (
-          <ul>
+          <ul className="flex flex-col gap-4">
             {allSubjectExams.map((exam) => (
               <li
                 key={exam._id}
-                className="flex cursor-pointer items-center justify-between bg-blue-50 px-6 py-3"
+                className="flex cursor-pointer items-center justify-between bg-blue-50 px-6 py-3 text-sm md:text-xl"
                 onClick={() => {
-                  console.log(exam._id);
                   router.push(`/quiz/${exam._id}`);
                 }}
               >
                 <div className="flex flex-col gap-2">
-                  <span className="text-xl font-semibold text-blue-600">
+                  <span className="font-semibold text-blue-600">
                     {exam.title}
                   </span>
                   <span className="text-gray-500">
@@ -48,7 +47,7 @@ export default function Exams({ subjectId }: { subjectId: string }) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Timer />
+                  <Timer size={16} />
                   <span>Duration:</span>
                   <span className="text-gray-500">{exam.duration} miutes</span>
                 </div>

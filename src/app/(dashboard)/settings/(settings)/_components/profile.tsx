@@ -83,20 +83,20 @@ export default function Profile() {
     return <Card className="p-4">Failed to load user data.</Card>;
   }
 
-  console.log(data.user);
-
   // Handlers
 
   // Handle form submission
   const onSubmit: SubmitHandler<UserInfoType> = async (data: UserInfoType) => {
-    console.log(data);
-
     userInfoMutation.mutate(data, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       },
       onError: (error) => {
-        console.error("Update failed:", error);
+        void error;
+        toast({
+          title: "Error",
+          description: "Failed to update user information.",
+        });
       },
     });
   };
@@ -105,6 +105,7 @@ export default function Profile() {
   const deleteAccountHandler = async () => {
     const result = await deleteAccount();
 
+    // If deletion is successful
     if (result.success) {
       toast({
         description: (
@@ -127,7 +128,7 @@ export default function Profile() {
   };
 
   return (
-    <Card className="max-h-screen w-full border-0 py-2 pt-4 shadow-none [&_*]:rounded-none">
+    <Card className="max-h-screen w-full border-0 p-2 pt-4 shadow-none xl:px-4 [&_*]:rounded-none">
       {/* Toaster */}
       <Toaster />
 
@@ -244,13 +245,17 @@ export default function Profile() {
             {/* Dialog */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button type="button" variant="danger">
+                <Button
+                  type="button"
+                  className="text-sm xl:text-lg"
+                  variant="danger"
+                >
                   Delete My Account
                 </Button>
               </DialogTrigger>
 
               {/* Content */}
-              <DialogContent className="mx-auto flex flex-col justify-between rounded-lg border border-gray-300 p-4 sm:min-h-96 sm:max-w-xl">
+              <DialogContent className="mx-auto flex min-h-[27rem] w-80 max-w-xl flex-col justify-between rounded-lg border border-gray-300 p-4 md:max-h-80 md:w-[32rem]">
                 <DialogHeader>
                   {/* Title */}
                   <DialogTitle className="mb-4 translate-y-5">
@@ -275,7 +280,7 @@ export default function Profile() {
                 </DialogHeader>
 
                 {/* Footer */}
-                <DialogFooter className="border-t-2 border-gray-100 bg-gray-50 py-4 sm:justify-around [&_*]:rounded-none">
+                <DialogFooter className="gap-2 border-t-2 border-gray-100 bg-gray-50 py-4 sm:justify-around [&_*]:rounded-none">
                   <DialogClose asChild>
                     <Button
                       type="button"
@@ -298,7 +303,9 @@ export default function Profile() {
               </DialogContent>
             </Dialog>
 
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" className="text-sm xl:text-lg">
+              Save Changes
+            </Button>
           </div>
         </form>
       </Form>

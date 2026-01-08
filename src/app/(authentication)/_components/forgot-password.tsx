@@ -26,6 +26,7 @@ import { useVerifyResetCode } from "../_hooks/use-verify-reset-code";
 import { useResetPassword } from "../_hooks/use-reset-password";
 import { useRouter } from "next/navigation";
 
+// Form values type
 type ForgotPasswordFormValues = {
   email: string;
   password: string;
@@ -47,6 +48,7 @@ export default function ForgotPassword() {
     setCurrentStep((prev) => prev + 1);
   };
 
+  // Handle previous step
   const handlePrevStep = () => {
     setCurrentStep((prev) => prev - 1);
   };
@@ -66,9 +68,9 @@ export default function ForgotPassword() {
   const verifyResetCodeMutation = useVerifyResetCode();
   const resetPasswordMutation = useResetPassword();
 
+  // Email mutation handler
   const emailMutationHandler = (email: string) => {
     forgotPasswordMutation.mutate(email);
-    console.log(email);
   };
 
   // Submit handler
@@ -87,7 +89,7 @@ export default function ForgotPassword() {
           handleNextStep();
         },
         onError: (error) => {
-          console.error("OTP verification failed:", error);
+          void error;
           form.setError("code", { message: "Invalid otp code" });
         },
       });
@@ -102,7 +104,7 @@ export default function ForgotPassword() {
             router.push("/login");
           },
           onError: (error) => {
-            console.error("Reset password failed:", error);
+            void error;
             form.setError("rePassword", {
               message: "Failed to reset password",
             });
@@ -118,14 +120,13 @@ export default function ForgotPassword() {
 
     const timer = setInterval(() => {
       setResendTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-      console.log("here timer");
     }, 1000);
 
     return () => clearInterval(timer);
   }, [resendTimeLeft]);
 
   return (
-    <div className="mt-24 h-authForms w-authForms space-y-4">
+    <div className="m-auto mt-24 h-authForms w-80 space-y-4 md:w-96 xl:m-0 xl:w-authForms">
       {/* Forgot password */}
       {currentStep === 1 && (
         <div className="flex flex-col gap-10">

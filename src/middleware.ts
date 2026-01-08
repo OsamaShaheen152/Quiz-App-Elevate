@@ -21,7 +21,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (publicRoutes.includes(req.nextUrl.pathname) && token) {
-    const url = new URL("/diplomas", req.nextUrl.origin);
+    const url = new URL("/exams", req.nextUrl.origin);
     return NextResponse.redirect(url);
   }
 

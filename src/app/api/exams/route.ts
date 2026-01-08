@@ -1,14 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const { id } = params;
-
-  console.log("Subject ID from API Route:", id);
-
+export async function GET(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (!token?.accessToken) {
@@ -18,14 +11,11 @@ export async function GET(
     );
   }
 
-  const response = await fetch(
-    `https://exam.elevateegy.com/api/v1/exams?subject=${id}`,
-    {
-      headers: {
-        token: token.accessToken,
-      },
+  const response = await fetch(`https://exam.elevateegy.com/api/v1/exams`, {
+    headers: {
+      token: token.accessToken,
     },
-  );
+  });
 
   if (!response.ok) {
     return NextResponse.json(

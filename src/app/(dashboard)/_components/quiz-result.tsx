@@ -4,6 +4,7 @@ import type { Exam, QuizResult } from "@/lib/types/quiz";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
+// Props for QuizResultComponent
 interface QuizResultProps {
   result: QuizResult;
   onRetakeQuiz: () => void;
@@ -18,7 +19,6 @@ export function QuizResultComponent({
 
   exam,
 }: QuizResultProps) {
-  console.log(exam);
   // Calculate correct
   const correctCount = result?.correct;
 
@@ -33,9 +33,6 @@ export function QuizResultComponent({
 
   // Wrong questions
   const wrongQuestions = result.WrongQuestions;
-
-  console.log("incorrectCount:", incorrectCount);
-  console.log("result:", result);
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -54,9 +51,9 @@ export function QuizResultComponent({
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-4xl gap-6 p-4">
+      <div className="mx-auto flex max-w-4xl flex-col gap-6 p-4 xl:flex-row">
         {/* Left Side - Score Circle */}
-        <div className="w-64">
+        <div className="w-full xl:w-64">
           <div className="rounded-lg bg-white p-6 shadow-md">
             <h2 className="text-blue- 600 mb-6 text-xl font-semibold">
               Results:
@@ -135,7 +132,6 @@ export function QuizResultComponent({
             {correctQuestions.length &&
               correctQuestions.map((question) => {
                 const correctAnswerText = question.correctAnswer;
-                console.log("correctAnswerText ", correctAnswerText);
 
                 return (
                   <div
@@ -177,10 +173,6 @@ export function QuizResultComponent({
             {wrongQuestions.map((question) => {
               const correctAnswerText = question.correctAnswer;
               const inCorrectAnswer = question.inCorrectAnswer;
-
-              console.log("correctAnswerText ", correctAnswerText);
-              console.log("inCorrectAnswer ", inCorrectAnswer);
-
               return (
                 <div
                   key={question._id}
@@ -230,7 +222,7 @@ export function QuizResultComponent({
       </div>
 
       {/* Bottom Buttons */}
-      <div className="mx-auto max-w-4xl p-4">
+      <div className="mx-auto mb-10 max-w-4xl p-4 xl:mb-0">
         <div className="flex justify-between gap-4">
           <Button
             onClick={onRetakeQuiz}

@@ -3,7 +3,7 @@ import { BookOpenCheck, Brain, RectangleEllipsis } from "lucide-react";
 
 export default function AuthText() {
   return (
-    <div className="min-h-screen w-[720px] bg-gradient-to-b from-blue-100 via-blue-50 to-white">
+    <div className="hidden min-h-screen w-[720px] bg-gradient-to-b from-blue-100 via-blue-50 to-white xl:block">
       <div className="container px-32 py-12">
         {/* Header */}
         <ExamApp />

@@ -1,15 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
+// Props for QuizTimer component
 interface QuizTimerProps {
   initialMinutes: number;
   onTimeUp: () => void;
 }
 
 export function QuizTimer({ initialMinutes, onTimeUp }: QuizTimerProps) {
+  // State for remaining time in seconds
   const [timeLeft, setTimeLeft] = useState(initialMinutes * 60); // Convert to seconds
   const totalTime = initialMinutes * 60;
 
+  // Effect to handle timer countdown
   useEffect(() => {
     // Handle time up
     if (timeLeft <= 0) {
@@ -25,6 +27,7 @@ export function QuizTimer({ initialMinutes, onTimeUp }: QuizTimerProps) {
     return () => clearInterval(timer);
   }, [timeLeft, onTimeUp]);
 
+  // Calculate minutes and seconds
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   const formatTime = (time: number) => time.toString().padStart(2, "0");
@@ -43,7 +46,7 @@ export function QuizTimer({ initialMinutes, onTimeUp }: QuizTimerProps) {
   };
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex h-16 w-16 items-center justify-center lg:h-24 lg:w-24">
       {/* SVG Circle Progress */}
       <svg
         className="-rotate-90 transform"
@@ -78,9 +81,9 @@ export function QuizTimer({ initialMinutes, onTimeUp }: QuizTimerProps) {
       </svg>
 
       {/* Timer Text */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center text-sm xl:text-xl">
         <div className="text-center">
-          <div className="font-mono text-2xl font-bold text-gray-800">
+          <div className="font-mono font-bold text-gray-800">
             {formatTime(minutes)}:{formatTime(seconds)}
           </div>
         </div>

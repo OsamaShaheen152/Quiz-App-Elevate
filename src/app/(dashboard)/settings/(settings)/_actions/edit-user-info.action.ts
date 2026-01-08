@@ -8,7 +8,6 @@ export async function editUserInfo(data: { [key: string]: string }) {
 
   // Get token from jwt
   const token = jwt?.accessToken;
-  console.log("token is ", token);
 
   if (!token) {
     return JSON.stringify({ message: "Unauthorized From client" });

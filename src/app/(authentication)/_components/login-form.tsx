@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,18 +10,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Card } from "@/components/ui/card";
+import { Eye, EyeOff, XCircle } from "lucide-react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Card } from "@/components/ui/card";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Eye, EyeOff, XCircle } from "lucide-react";
 import { LoginFormInput, loginSchema } from "@/lib/schemes/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginForm() {
+  // State to toggle password visibility
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  // Initialize the form
   const form = useForm<LoginFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -31,11 +33,11 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  // Form submit handler
   const onSubmit: SubmitHandler<LoginFormInput> = async (
     data: LoginFormInput,
   ) => {
     try {
-      console.log(data);
       const response = await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -45,21 +47,21 @@ export default function LoginForm() {
       if (response?.ok) {
         // Redirect to desired page after successful login
         // In authentication use location.href to make a full page refresh be ensure the session has been saved and avoid the use of nextjs router
-        location.href = "/diplomas"; // Or use Next.js router
+        location.href = "/exams"; // Or use Next.js router
       }
-
-      void response; // Placeholder to avoid unused variable warning
     } catch (error) {
-      console.error("Login error:", error);
+      void error;
     }
   };
 
+  // Auto focus email input on mount
   useEffect(() => {
     setTimeout(() => form.setFocus("email"), 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Card className="h-authFroms mt-10 w-authForms border-0 p-4 shadow-none [&_*]:rounded-none">
+    <Card className="m-auto h-authForms w-80 border-0 p-4 shadow-none md:w-96 xl:m-0 xl:mt-10 xl:w-authForms [&_*]:rounded-none">
       <h1 className="mb-6 text-3xl font-bold">Login</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -120,7 +122,7 @@ export default function LoginForm() {
 
           {/* Forgot Password */}
           <div className="flex flex-col items-center space-y-6">
-            <div className="mt-2 translate-x-36 transform">
+            <div className="mt-2 translate-x-16 xl:translate-x-36">
               <Link
                 href="/forgot-password"
                 className="text-sm text-blue-600 hover:underline"

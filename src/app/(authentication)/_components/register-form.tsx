@@ -53,7 +53,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card className="min-h-screen w-authForms border-0 py-6 shadow-none [&_*]:rounded-none">
+    <Card className="m-auto min-h-screen w-80 border-0 py-6 shadow-none md:w-96 xl:m-0 xl:w-authForms [&_*]:rounded-none">
       <h1 className="mb-6 text-3xl font-bold">Create Account</h1>
       <Form {...form}>
         <form

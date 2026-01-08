@@ -1,8 +1,6 @@
 import { RegisterFormValues } from "@/lib/schemes/auth.schema";
 
 export async function register(data: RegisterFormValues) {
-  console.log("Registering user with data:", data);
-
   // Send the user data to the api
   const response = await fetch(
     "https://exam.elevateegy.com/api/v1/auth/signup",
@@ -19,7 +17,6 @@ export async function register(data: RegisterFormValues) {
   // Check Errors
   if (!response.ok) {
     const errorData = await response.json();
-    console.error("Error response:", errorData);
     throw new Error(
       `Registration failed: ${errorData.message || response.statusText}`,
     );

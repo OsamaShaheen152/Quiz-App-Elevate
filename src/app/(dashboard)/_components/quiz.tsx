@@ -72,10 +72,6 @@ export function Quiz({ examId }: QuizProps) {
   // Submit quiz
   const submitQuiz = async () => {
     if (!quizData || isSubmittingRef.current) {
-      console.log(
-        "Cannot submit:",
-        !quizData ? "No quiz data" : "Already submitting",
-      );
       return;
     }
 
@@ -83,30 +79,22 @@ export function Quiz({ examId }: QuizProps) {
     setIsSubmitting(true);
 
     try {
-      console.log("Starting quiz submission...");
-      console.log("User answers:", userAnswers);
-
       // Transform user answers to API format
       const answers: Answer[] = quizData.questions.map((question) => ({
         questionId: question._id,
         correct: userAnswers[question._id] || "_", // Use empty string if no answer selected
       }));
 
-      console.log("Transformed answers:", answers);
-
       const submission: QuizSubmission = {
         answers,
         time: 0,
       };
 
-      console.log("Final submission object:", submission);
-
       const result = await submitQuizMutation.mutateAsync(submission);
-      console.log("Quiz submitted successfully:", result);
 
       setQuizResult(result);
     } catch (error) {
-      console.error("Failed to submit quiz:", error);
+      void error;
     } finally {
       setIsSubmitting(false);
       isSubmittingRef.current = false;
@@ -130,7 +118,6 @@ export function Quiz({ examId }: QuizProps) {
   const handleTimeUp = async () => {
     if (isSubmittingRef.current) return; // Prevent multiple submissions
 
-    console.log("Time is up! Auto-submitting quiz...");
     setTimeUp(true);
     await submitQuiz();
     setShowResults(true);
@@ -150,9 +137,8 @@ export function Quiz({ examId }: QuizProps) {
   // Explore handler
   const handleExplore = () => {
     // Navigate to explore page
-    console.log("Navigate to explore page");
     if (typeof window !== "undefined") {
-      location.href = "/diplomas"; // or use your routing method
+      location.href = "/exams"; // or use your routing method
     }
   };
 

@@ -22,12 +22,15 @@ export const authOptions: NextAuthOptions = {
   },
 
   providers: [
+    // Credentials
     Credentials({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
+
+      // Authorize
       authorize: async (credentials) => {
         const response = await fetch(process.env.SIGN_IN_API!, {
           method: "POST",
@@ -40,6 +43,7 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        // Data
         const data: ApiResponse<LoginResponse> = await response.json();
         if ("code" in data) {
           throw new Error(data.message);
@@ -54,7 +58,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
+  // Callbacks
   callbacks: {
+    // JWT
     jwt: ({ token, user }) => {
       if (user) {
         token = {
@@ -64,6 +70,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
+    // Session
     session: ({ session, token }) => {
       session = {
         // this to destructure the old data in the session and then override the properties you want to adjust down
@@ -86,5 +93,6 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
 
+  // Secret
   secret: process.env.NEXTAUTH_SECRET,
 };

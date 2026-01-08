@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import type { AnswerOption, Question } from "@/lib/types/quiz";
 

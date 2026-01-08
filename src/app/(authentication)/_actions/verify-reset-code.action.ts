@@ -2,10 +2,6 @@
 
 // Verify reset code
 export async function verifyResetCode(data: string) {
-  console.log("Data in verify reset code action: ", {
-    resetCode: data,
-  });
-
   // Send the user data to the api
   const response = await fetch(
     "https://exam.elevateegy.com/api/v1/auth/verifyResetCode",
@@ -25,8 +21,7 @@ export async function verifyResetCode(data: string) {
   if (!response.ok) {
     const errorData = await response.json();
 
-    console.error("Error response:", errorData);
-    console.error("Error response:", errorData.message);
+    void errorData;
 
     throw new Error("Failed to verify reset code!!!!");
   }

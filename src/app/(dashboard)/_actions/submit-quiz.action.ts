@@ -32,7 +32,6 @@ export async function submitQuiz(data: QuizSubmission): Promise<QuizResult> {
   // Check the response
   if (!res.ok) {
     const errorText = await res.text();
-    console.error("External API error:", res.status, errorText);
 
     return JSON.stringify({
       error: "Failed to submit quiz",

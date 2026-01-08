@@ -6,11 +6,14 @@ import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Diplomas() {
+  // Router
   const router = useRouter();
 
+  // Diplomas Hook
   const { diplomas, isLoading, error, hasNextPage, fetchNextPage } =
     useDiplomas();
 
+  // Diploma Type
   type Diploma = {
     _id: string;
     name: string;
@@ -18,11 +21,11 @@ export default function Diplomas() {
     // add other properties if needed
   };
 
+  // Flattened list of all subjects from all pages
   const allSubjects: Diploma[] =
     diplomas?.pages.flatMap((page) => page.subjects as Diploma[]) || [];
 
-  console.log(allSubjects);
-
+  // Loading State
   if (isLoading && !diplomas) {
     return <p>Loading...</p>;
   }

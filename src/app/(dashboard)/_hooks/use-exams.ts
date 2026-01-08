@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Exam } from "@/lib/types/quiz";
 import { PaginatedResponse } from "@/lib/types/api";
 
-export default function useExams(subjectId: string) {
+export default function useExams() {
   const {
     data: payload,
     isLoading,
@@ -12,8 +12,8 @@ export default function useExams(subjectId: string) {
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ["exams", subjectId],
-    queryFn: ({ pageParam }) => fetchExams(subjectId, pageParam as number),
+    queryKey: ["exams"],
+    queryFn: () => fetchExams(),
     initialPageParam: 1,
     getNextPageParam: (lastPage: PaginatedResponse<Exam>) => {
       const { currentPage, numberOfPages } = lastPage.metadata;
