@@ -129,8 +129,8 @@ export function QuizResultComponent({
         <div className="flex-1">
           <div className="max-h-[500px] space-y-4 overflow-y-auto pr-2">
             {/* Display correct questions */}
-            {correctQuestions.length &&
-              correctQuestions.map((question) => {
+            {correctQuestions?.length &&
+              correctQuestions?.map((question) => {
                 const correctAnswerText = question.correctAnswer;
 
                 return (
@@ -170,7 +170,7 @@ export function QuizResultComponent({
               })}
 
             {/* Display wrong questions */}
-            {wrongQuestions.map((question) => {
+            {wrongQuestions?.map((question) => {
               const correctAnswerText = question.correctAnswer;
               const inCorrectAnswer = question.inCorrectAnswer;
               return (
