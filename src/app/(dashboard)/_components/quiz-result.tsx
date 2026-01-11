@@ -19,20 +19,26 @@ export function QuizResultComponent({
 
   exam,
 }: QuizResultProps) {
-  // Calculate correct
-  const correctCount = result?.correct;
+  // Calculate correct with default value
+  const correctCount = result?.correct ?? 0;
 
-  // Incorrect count
-  const incorrectCount = result?.wrong;
+  // Incorrect count with default value
+  const incorrectCount = result?.wrong ?? 0;
 
-  // Total questions
+  // Total questions - use result.total if available, otherwise calculate
   const totalQuestions = correctCount + incorrectCount;
 
   // Correct questions
-  const correctQuestions = result?.correctQuestions;
+  const correctQuestions = result?.correctQuestions ?? [];
 
   // Wrong questions
-  const wrongQuestions = result?.WrongQuestions;
+  const wrongQuestions = result?.WrongQuestions ?? [];
+
+  console.log("correctCount", correctCount);
+  console.log("incorrectCount", incorrectCount);
+  console.log("totalQuestions", totalQuestions);
+  console.log("correctQuestions", correctQuestions);
+  console.log("wrongQuestions", wrongQuestions);
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -47,7 +53,7 @@ export function QuizResultComponent({
             </div>
           </div>
 
-          <Progress value={(totalQuestions / totalQuestions) * 100} />
+          <Progress value={totalQuestions > 0 ? 100 : 0} />
         </div>
       </div>
 
@@ -75,35 +81,39 @@ export function QuizResultComponent({
                   fill="none"
                 />
                 {/* Correct answers arc */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="#10b981"
-                  strokeWidth="14"
-                  fill="none"
-                  strokeDasharray={`${
-                    (correctCount / totalQuestions) * 251.2
-                  } 251.2`}
-                  className="transition-all duration-1000 ease-out"
-                />
+                {correctCount && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="#10b981"
+                    strokeWidth="14"
+                    fill="none"
+                    strokeDasharray={`${
+                      (correctCount / totalQuestions) * 251.2
+                    } 251.2`}
+                    className="transition-all duration-1000 ease-out"
+                  />
+                )}
 
                 {/* Incorrect answers arc */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="#ef4444"
-                  strokeWidth="14"
-                  fill="none"
-                  strokeDasharray={`${
-                    (incorrectCount / totalQuestions) * 251.2
-                  } 251.2`}
-                  strokeDashoffset={`-${
-                    (correctCount / totalQuestions) * 251.2
-                  }`}
-                  className="transition-all duration-1000 ease-out"
-                />
+                {incorrectCount && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="#ef4444"
+                    strokeWidth="14"
+                    fill="none"
+                    strokeDasharray={`${
+                      (incorrectCount / totalQuestions) * 251.2
+                    } 251.2`}
+                    strokeDashoffset={`-${
+                      (correctCount / totalQuestions) * 251.2
+                    }`}
+                    className="transition-all duration-1000 ease-out"
+                  />
+                )}
               </svg>
             </div>
 
